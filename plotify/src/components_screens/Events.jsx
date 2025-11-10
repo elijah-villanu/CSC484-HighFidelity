@@ -76,7 +76,7 @@ export default function Events() {
       <div className="space-y-2">
         {events.map((event) => (
           <EventCard
-            linkTo={`events/${event.id}`}
+            linkTo={`/events/${event.id}`}
             id={event.id}
             eventTitle={event.title}
             eventDate={event.date}
