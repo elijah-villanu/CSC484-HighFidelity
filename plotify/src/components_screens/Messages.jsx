@@ -1,5 +1,12 @@
+import MessagesCard from "./components/MessagesCard";
+
 export default function Messages() {
   return (
-    <h1>Messages Screen</h1>
+    <MessagesCard
+      sender="John Doe"
+      messagePeek="Hi this is a message"
+      lastTimestamp="Yesterday"
+      unreadCount="2"
+    />
   );
 }
