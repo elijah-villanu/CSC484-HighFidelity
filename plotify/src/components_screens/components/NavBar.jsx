@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 export default function Home() {
   return (
-    <nav className="min-h-full min-w-full">
+    <nav className="min-h-full min-w-full border-t-1 border-t-solid border-t-custom-gray">
       <ul className="flex min-w-full min-h-full">
         <li className="flex flex-grow items-center justify-center">
           <Link to={"/"} className="flex flex-col text-center">
