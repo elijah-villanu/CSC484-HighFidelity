@@ -4,6 +4,8 @@ import Home from "./components_screens/Home";
 import Events from "./components_screens/Events";
 import Messages from "./components_screens/Messages";
 import NavBar from "./components_screens/components/NavBar";
+import SpecificEvent from "./components_screens/SpecificEvent";
+
 
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
         <Route path="/home" element={<Home />}/>
         
         <Route path="/events" element={<Events />}/>
+
+        <Route path="/events/:eventId" element={<SpecificEvent />} />
         
         <Route path="/messages" element={<Messages />}/>
                 
