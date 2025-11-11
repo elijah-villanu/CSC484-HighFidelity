@@ -86,9 +86,8 @@ export default function Events() {
           />
         ))}
       </div>
-
       {/* Floating + Button */}
-      <button className="w-16 h-16 bg-blue-400 text-white text-4xl rounded-full fixed bottom-24 right-6 flex items-center justify-center shadow-lg">
+      <button className="w-20 h-20 bg-blue-400 text-white text-6xl rounded-full fixed bottom-24 right-136 flex items-center justify-center shadow-lg">
         +
       </button>
     </div>
