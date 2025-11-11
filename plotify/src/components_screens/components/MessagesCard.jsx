@@ -1,6 +1,8 @@
+import { Link } from "react-router";
+
 export default function MessagesCard(props) {
   return (
-    <div className="flex items-center gap-[1rem] border-b-1 border-b-solid border-b-custom-gray p-[1rem]">
+    <Link to="/conversation" className="flex items-center gap-[1rem] border-b-1 border-b-solid border-b-custom-gray p-[1rem]">
       <div className="h-6 w-6 rounded-full bg-neutral-300 flex items-center justify-center text-[10px] font-semibold text-neutral-700">
         {props.sender
           .split(" ")
@@ -15,6 +17,6 @@ export default function MessagesCard(props) {
         <p>{props.lastTimestamp}</p>
         <p className="flex items-center justify-center p-[0.5rem] rounded-full bg-custom-beige w-[1.75rem] h-[1.75rem]">{props.unreadCount}</p>
       </div>
-    </div>
+    </Link>
   );
 }
