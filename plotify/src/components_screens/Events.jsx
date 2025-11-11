@@ -25,7 +25,7 @@ export default function Events() {
       date: "Nov. 14",
       time: "7:00pm - 9:00pm",
       location: "1234 Coast Drive, San Luis Obispo, CA",
-      attendees: "8/15",
+      attendees: ""
     },
     {
       id: 3,
@@ -41,9 +41,9 @@ export default function Events() {
       date: "Nov. 17",
       time: "7:00pm - 9:00pm",
       location: "Downtown",
-      attendees: "15/25",
-    },
-  ];
+      attendees: ""
+    }
+  ]
   return (
     <div className="p-4 pb-24 relative">
       {/* Top Tabs */}
@@ -86,9 +86,8 @@ export default function Events() {
           />
         ))}
       </div>
-
       {/* Floating + Button */}
-      <button className="w-16 h-16 bg-blue-400 text-white text-4xl rounded-full fixed bottom-24 right-6 flex items-center justify-center shadow-lg">
+      <button className="w-20 h-20 bg-blue-400 text-white text-6xl rounded-full fixed bottom-24 right-136 flex items-center justify-center shadow-lg">
         +
       </button>
     </div>
