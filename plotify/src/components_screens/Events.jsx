@@ -41,7 +41,7 @@ export default function Events() {
       date: "Nov. 17",
       time: "7:00pm - 9:00pm",
       location: "Downtown",
-      attendees: "15/25"
+      attendees: ""
     }
   ]
   return (
