@@ -12,12 +12,14 @@ export default function Home() {
             src="https://images.pexels.com/photos/8638714/pexels-photo-8638714.jpeg"
           />
         </div>
-        <p>John Doe</p>
+        <p className="font-bold text-[1.125rem]">John Doe</p>
       </div>
 
       <div className="px-[1rem]">
-        <h2>Hosting</h2>
-        <Link to={"/events"}>See All</Link>
+        <div className="flex justify-between items-center">
+          <h2 className="text-[1.25rem] font-semibold">Hosting</h2>
+          <Link to={"/events"}>See All</Link>
+        </div>
         <EventCard
           linkTo="/home"
           id="1"
@@ -29,8 +31,10 @@ export default function Home() {
         />
       </div>
       <div className="px-[1rem]">
-        <h2>Attending</h2>
-        <Link to={"/events"}>See All</Link>
+        <div className="flex justify-between items-center">
+          <h2 className="text-[1.25rem] font-semibold">Attending</h2>
+          <Link to={"/events"}>See All</Link>
+        </div>
         <EventCard
           linkTo="/home"
           id="1"
@@ -42,8 +46,10 @@ export default function Home() {
         />
       </div>
       <div className="px-[1rem]">
-        <h2>Frequently Attended</h2>
-        <Link to={"/events"}>See All</Link>
+        <div className="flex justify-between items-center">
+          <h2 className="text-[1.25rem] font-semibold">Frequently Attended</h2>
+          <Link to={"/events"}>See All</Link>
+        </div>
         <EventCard
           linkTo="/home"
           id="1"
