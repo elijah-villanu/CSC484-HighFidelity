@@ -1,10 +1,10 @@
-// import { useState} from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Tag as TagIcon } from "lucide-react";
 import Tag from "./components/Tag";
+import { useState } from "react";
 
 // Temporary tag description data structure
-const tags = [
+const initTags = [
   {
     key: 1,
     name: "Casual",
@@ -33,18 +33,26 @@ const tags = [
 ];
 
 export default function CreateEvent(props) {
-  
+  const [tags, setTags] = useState(initTags);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const newEvent = {
-      title:  event.currentTarget.elements.title.value,
-      date:  event.currentTarget.elements.from.value,
+      title: event.currentTarget.elements.title.value,
+      date: event.currentTarget.elements.from.value,
       time: event.currentTarget.elements.to.value,
-      location:  event.currentTarget.elements.location.value,
+      location: event.currentTarget.elements.location.value,
       attendees: "",
     };
-    props.create(newEvent)
-  }
+    props.create(newEvent);
+  };
+
+  // Set on flag when clicked
+  const handleTag = (key) => {
+    setTags(
+      tags.map((tag) => (tag.key === key ? { ...tag, on: !tag.on } : tag))
+    );
+  };
 
   const navigate = useNavigate();
   return (
@@ -120,14 +128,19 @@ export default function CreateEvent(props) {
           </div>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <Tag name={tag.name} tagOn={tag.on} />
+              <Tag
+                tagKey={tag.key}
+                click={handleTag}
+                name={tag.name}
+                tagOn={tag.on}
+              />
             ))}
           </div>
         </div>
 
         {/* Create event button */}
         <div className="flex-col flex bg-custom-light-blue rounded-sm h-9 hover:bg-custom-blue">
-          <button className="h-full w-full" type="submit">
+          <button className="h-full w-full cursor-pointer" type="submit">
             <b>CREATE</b>
           </button>
         </div>
