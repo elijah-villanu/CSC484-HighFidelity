@@ -24,7 +24,7 @@ export default function Events() {
       date: "Nov. 14",
       time: "7:00pm - 9:00pm",
       location: "1234 Coast Drive, San Luis Obispo, CA",
-      attendees: "8/15"
+      attendees: ""
     },
     {
       id: 3,
@@ -40,7 +40,7 @@ export default function Events() {
       date: "Nov. 17",
       time: "7:00pm - 9:00pm",
       location: "Downtown",
-      attendees: "15/25"
+      attendees: ""
     }
   ]
   return (
