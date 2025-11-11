@@ -5,7 +5,7 @@ import Events from "./components_screens/Events";
 import Messages from "./components_screens/Messages";
 import NavBar from "./components_screens/components/NavBar";
 import SpecificEvent from "./components_screens/SpecificEvent";
-
+import CreateEvent from "./components_screens/CreateEvent";
 
 
 function App() {
@@ -21,6 +21,8 @@ function App() {
         <Route path="/events/:eventId" element={<SpecificEvent />} />
         
         <Route path="/messages" element={<Messages />}/>
+
+        <Route path="/events/create" element={<CreateEvent />}/>
                 
         {/* <Route path="*" element={<NotFoundPage />} /> */}
         
