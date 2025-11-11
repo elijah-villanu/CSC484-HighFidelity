@@ -1,7 +1,6 @@
 import { Plus, Check } from "lucide-react";
 
 export default function Tag(props) {
-    console.log(props.on)
   return (
     <div>
       {props.tagOn ? (

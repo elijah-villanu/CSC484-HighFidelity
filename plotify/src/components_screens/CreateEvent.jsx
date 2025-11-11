@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+// import { useState} from "react";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Tag as TagIcon } from "lucide-react";
 import Tag from "./components/Tag";
@@ -32,7 +32,20 @@ const tags = [
   },
 ];
 
-export default function CreateEvent() {
+export default function CreateEvent(props) {
+  
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newEvent = {
+      title:  event.currentTarget.elements.title.value,
+      date:  event.currentTarget.elements.from.value,
+      time: event.currentTarget.elements.to.value,
+      location:  event.currentTarget.elements.location.value,
+      attendees: "",
+    };
+    props.create(newEvent)
+  }
+
   const navigate = useNavigate();
   return (
     <div>
@@ -47,12 +60,13 @@ export default function CreateEvent() {
         <h1 className="text-lg font-semibold text-neutral-800">New Event</h1>
       </div>
 
-      <div className="flex flex-col m-6 gap-8">
+      <form onSubmit={handleSubmit} className="flex flex-col m-6 gap-8">
         {/* Name and locations fields */}
         <div>
           <h1>Name</h1>
           <input
             type="text"
+            id="title"
             className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
         </div>
@@ -60,6 +74,7 @@ export default function CreateEvent() {
           <h1>Location</h1>
           <input
             type="text"
+            id="location"
             className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
         </div>
@@ -70,6 +85,7 @@ export default function CreateEvent() {
             <h2>From</h2>
             <input
               type="text"
+              id="from"
               className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
             ></input>
           </div>
@@ -77,11 +93,14 @@ export default function CreateEvent() {
             <h2>To</h2>
             <input
               type="text"
+              id="to"
               className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
             ></input>
           </div>
         </div>
-        <button className="p-1 -mt-5 bg-custom-gray max-w-20 rounded-sm">Add Day</button>
+        <button className="p-1 -mt-5 bg-custom-gray max-w-20 rounded-sm">
+          Add Day
+        </button>
 
         {/* Description field */}
         <div>
@@ -89,14 +108,14 @@ export default function CreateEvent() {
           <textarea
             rows="3"
             id="description"
-            className="outline-1 outline-grey w-full"
+            className="outline-1 outline-grey w-full p-1"
           ></textarea>
         </div>
 
         {/* Tags field */}
         <div>
-          <div className="mb-3 flex flex-row items-center gap-1">
-            <TagIcon className="h-6"/>
+          <div className="mb-2 flex flex-row items-center gap-1">
+            <TagIcon className="h-6" />
             <h2>Tags</h2>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -108,9 +127,11 @@ export default function CreateEvent() {
 
         {/* Create event button */}
         <div className="flex-col flex bg-custom-light-blue rounded-sm h-9 hover:bg-custom-blue">
-          <button className="h-full w-full"><b>CREATE</b></button>
+          <button className="h-full w-full" type="submit">
+            <b>CREATE</b>
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
