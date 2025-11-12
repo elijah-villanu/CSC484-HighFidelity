@@ -4,7 +4,7 @@ import EventCard from "./components/EventCard";
 export default function Home() {
   return (
     <main className="overflow-scroll flex flex-col gap-[1rem]">
-      <div className="flex items-center gap-[1rem] p-[1rem] bg-custom-beige">
+      <div className="flex items-center gap-[1rem] p-[1rem] bg-custom-beige h-[5rem] border-b border-custom-gray">
         <div className="size-[3rem] overflow-hidden flex items-center justify-center rounded-full">
           <img
             className="w-full"

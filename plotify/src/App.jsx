@@ -7,6 +7,7 @@ import Messages from "./components_screens/Messages";
 import NavBar from "./components_screens/components/NavBar";
 import SpecificEvent from "./components_screens/SpecificEvent";
 import CreateEvent from "./components_screens/CreateEvent";
+import Conversation from "./components_screens/Conversation";
 
 function App() {
   const initEvents = [
@@ -99,6 +100,8 @@ function App() {
         <Route path="/messages" element={<Messages />} />
 
         <Route path="/events/create" element={<CreateEvent create={handleCreate}/>} />
+
+        <Route path="/conversation" element={<Conversation/>} />
 
         {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
