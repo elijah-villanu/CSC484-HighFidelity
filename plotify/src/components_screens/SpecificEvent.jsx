@@ -38,7 +38,6 @@ export default function EventDetails() {
   const goingCount = event.going.length;
 
   return (
-    // Make page background white and adjust padding so nav doesn't overlap content
     <main className="overflow-scroll flex flex-col gap-[1rem] bg-white text-neutral-900 min-h-screen pb-[6rem]">
       {/* Header */}
       <div className="flex items-center gap-[0.75rem] p-[1rem] border-b border-neutral-300">

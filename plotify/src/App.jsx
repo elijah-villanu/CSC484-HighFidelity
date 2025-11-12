@@ -7,7 +7,6 @@ import NavBar from "./components_screens/components/NavBar";
 import SpecificEvent from "./components_screens/SpecificEvent";
 
 
-
 function App() {
   return (
     <>
