@@ -87,9 +87,11 @@ export default function Events() {
         ))}
       </div>
       {/* Floating + Button */}
-      <button className="w-20 h-20 bg-blue-400 text-white text-6xl rounded-full fixed bottom-24 right-136 flex items-center justify-center shadow-lg">
-        +
-      </button>
+      <Link to={"/events/create"}>
+        <button className="w-20 h-20 bg-blue-400 text-white text-6xl rounded-full fixed bottom-24 right-136 flex items-center justify-center shadow-lg">
+          +
+        </button>
+      </Link>
     </div>
   );
 }
