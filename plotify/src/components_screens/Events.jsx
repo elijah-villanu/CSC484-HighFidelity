@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import React, { useEffect, useState } from 'react';
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -47,7 +48,7 @@ export default function Events() {
   return (
     <main className="relative">
       {/* Top Tabs */}
-      <div className="flex justify-center border-b pb-2 mb-4 h-[5rem] bg-custom-beige border-b border-custom-gray">
+      <div className="flex justify-center border-b pb-2 mb-1 h-[5rem] bg-custom-beige border-b border-custom-gray">
         <button className="font-bold text-xl border-b-2 border-black pb-1 mr-6">
           Browse
         </button>
@@ -55,7 +56,7 @@ export default function Events() {
       </div>
 
       {/* Search Row */}
-      <div className="flex items-center mb-4 p-[1rem]">
+      <div className="flex items-center mb-1 mt-1 p-[1rem]">
         {/* Search Bar */}
         <div className="flex items-center bg-gray-100 rounded-full px-4 py-3 flex-1">
           <Search className="h-8 w-8 text-neutral-600" />
@@ -73,7 +74,7 @@ export default function Events() {
       </div>
 
       {/* Event Cards */}
-      <div className="space-y-2 px-[1rem]">
+      <div className="space-y-2 mb-1 px-[1rem]">
         {events.map((event) => (
           <EventCard
             linkTo={`/events/${event.id}`}
