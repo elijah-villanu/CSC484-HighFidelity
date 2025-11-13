@@ -171,7 +171,7 @@ export default function SpecificEvent({ events = [] }) {
                             </span>
                           </div>
                         )}
-                        <Link to = {"/events/conversation"}>
+                        <Link to = {"/conversation"}>
                             <button className="rounded-lg p-1 hover:bg-neutral-200">
                                 <MessageSquare className="h-4 w-4" />
                             </button>
