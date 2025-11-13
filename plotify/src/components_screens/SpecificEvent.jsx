@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
-  ArrowLeft,
+  ArrowLeft as BackIcon,
   Calendar as CalendarIcon,
   Clock,
   MapPin,
@@ -62,49 +62,47 @@ export default function SpecificEvent({ events = [] }) {
   return (
     <main className="overflow-scroll flex flex-col gap-[1rem] bg-white text-neutral-900 min-h-screen pb-[6rem]">
       {/* Header */}
-      <div className="flex items-center gap-[0.75rem] p-[1rem] border-b border-custom-gray h-[5rem] bg-custom-beige">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-neutral-200 transition">
-          <ArrowLeft className="h-5 w-5 text-neutral-800" />
+      <div className="flex items-center gap-[1rem] h-[5rem] px-[1.5rem] bg-custom-beige border-b border-custom-gray">
+        <button onClick={() => navigate(-1)}>
+          <BackIcon className="h-5 w-5 text-custom-dark-gray" />
         </button>
-        <h1 className="text-lg font-semibold text-neutral-800">Event Details</h1>
+        <h1 className="font-bold text-[1.25rem]">Event Details</h1>
       </div>
 
       {/* Event content */}
-      <div className="px-[1rem] pb-[1rem]">
-        <div className="bg-white text-neutral-900 rounded-xl shadow-lg border border-neutral-200">
+      <div className="px-[1.5rem] pb-[1rem]">
+        <div className="bg-white rounded-xl shadow-md border border-custom-light-gray">
           <div className="p-[1rem]">
             <h2 className="text-xl font-semibold">{event.title}</h2>
 
-            <ul className="mt-3 space-y-2 text-sm">
+            <ul className="mt-3 space-y-2 text-sm pb-[1rem]">
               <li className="flex items-center gap-3">
-                <CalendarIcon className="h-4 w-4 text-neutral-600" />
+                <CalendarIcon className="h-4 w-4 text-custom-dark-gray" />
                 <span>{event.date}</span>
               </li>
               <li className="flex items-center gap-3">
-                <Clock className="h-4 w-4 text-neutral-600" />
+                <Clock className="h-4 w-4 text-custom-dark-gray" />
                 <span>{event.time}</span>
               </li>
               <li className="flex items-center gap-3">
-                <MapPin className="h-4 w-4 text-neutral-600" />
+                <MapPin className="h-4 w-4 text-custom-dark-gray" />
                 <span>{event.location}</span>
               </li>
               <li className="flex items-center gap-3">
-                <UserRound className="h-4 w-4 text-neutral-600" />
+                <UserRound className="h-4 w-4 text-custom-dark-gray" />
                 <span>Hosted by {event.host ?? "TBD"}</span>
               </li>
               <li className="flex items-center gap-3">
-                <Users className="h-4 w-4 text-neutral-600" />
+                <Users className="h-4 w-4 text-custom-dark-gray" />
                 <span>
                 {cap ? `${goingCount}/${cap}` : event.attendees || "0/0"}
                 </span>
               </li>
             </ul>
 
-            <div className="my-4 h-px bg-neutral-200" />
-
             {/* Description with read more/less */}
-            <div>
-              <p className="text-sm leading-6 text-neutral-700">
+            <div className="border-y border-custom-light-gray py-[1rem]">
+              <p className="text-[0.875rem] text-black">
                 <span className="font-semibold">Description: </span>
                 {event.description
                   ? expanded
@@ -117,7 +115,7 @@ export default function SpecificEvent({ events = [] }) {
               {event.description && event.description.length > 120 && (
                 <button
                   onClick={() => setExpanded((v) => !v)}
-                  className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-lime-700 hover:text-lime-900"
+                  className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-custom-green"
                 >
                   {expanded ? (
                     <>
@@ -132,11 +130,9 @@ export default function SpecificEvent({ events = [] }) {
               )}
             </div>
 
-            <div className="my-4 h-px bg-neutral-200" />
-
             {/* Who's going */}
-            <div>
-              <div className="text-sm font-semibold text-neutral-900 mb-2">
+            <div className="pt-[1rem]">
+              <div className="text-sm font-semibold text-custom-black mb-2">
                 Who’s going?
               </div>
 
@@ -145,24 +141,24 @@ export default function SpecificEvent({ events = [] }) {
                   {event.going.map((p) => (
                     <li
                       key={p.name}
-                      className="flex items-center justify-between rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2"
+                      className="flex items-center justify-between rounded-2xl border border-custom-gray px-[0.75rem] py-[0.5rem]"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="h-6 w-6 rounded-full bg-neutral-300 flex items-center justify-center text-[10px] font-semibold text-neutral-700">
+                      <div className="flex items-center gap-[0.5rem]">
+                        <div className="h-6 w-6 rounded-full bg-custom-light-gray flex items-center justify-center text-[0.7rem] font-semibold text-custom-dark-gray">
                           {p.name
                             .split(" ")
                             .map((n) => n[0])
                             .join("")}
                         </div>
-                        <span className="text-sm text-neutral-900">
+                        <p className="flex items-center text-[0.875rem] text-black gap-[0.5rem]">
                           {p.name}
                           {p.isHost ? (
-                            <span className="ml-2 text-xs text-neutral-600">(host)</span>
+                            <span className="text-[0.75rem] text-custom-dark-gray">(host)</span>
                           ) : null}
-                        </span>
+                        </p>
                       </div>
 
-                      <div className="flex items-center gap-3 text-neutral-700">
+                      <div className="flex items-center gap-[0.5rem] text-custom-dark-gray">
                         {p.carSeats && (
                           <div className="flex items-center gap-1 text-sm">
                             <Car className="h-4 w-4" />
@@ -172,7 +168,7 @@ export default function SpecificEvent({ events = [] }) {
                           </div>
                         )}
                         <Link to = {"/conversation"}>
-                            <button className="rounded-lg p-1 hover:bg-neutral-200">
+                            <button>
                                 <MessageSquare className="h-4 w-4" />
                             </button>
                         </Link>
@@ -181,18 +177,18 @@ export default function SpecificEvent({ events = [] }) {
                   ))}
                 </ul>
               ) : (
-                <div className="text-sm text-neutral-600">No attendees yet.</div>
+                <div className="text-sm text-custom-dark-gray">No attendees yet.</div>
               )}
             </div>
 
             {/* RSVP button */}
-            <div className="p-[1rem] pt-4">
+            <div className="p-[1rem] px-[1.5rem]">
               <button
                 onClick={() => setIsRsvped((v) => !v)}
-                className={`w-full rounded-xl px-4 py-3 text-center text-base font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                className={`w-full rounded-2xl p-3 text-center  font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                   isRsvped
                     ? "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600"
-                    : "bg-sky-500 text-white hover:bg-sky-600 focus:ring-sky-500"
+                    : "bg-custom-dark-blue text-white focus:ring-custom-dark-blue"
                 }`}
               >
                 {isRsvped ? "RSVP’d" : "RSVP"}

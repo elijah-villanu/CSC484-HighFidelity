@@ -2,7 +2,8 @@ import { Link } from "react-router";
 import React, { useEffect, useState } from 'react';
 import {
   Calendar as CalendarIcon,
-  Clock,
+  X,
+  Plus,
   MapPin,
   Users,
   Search,
@@ -10,72 +11,39 @@ import {
 } from "lucide-react";
 import EventCard from "./components/EventCard";
 
-export default function Events() {
-  const events = [
-    {
-      id: 1,
-      title: "Chill Dinner",
-      date: "Nov. 10",
-      time: "6:00pm - 8:00pm",
-      location: "In-n-Out",
-      attendees: "2/5",
-    },
-    {
-      id: 2,
-      title: "Pitch Perfect Movie Night",
-      date: "Nov. 14",
-      time: "7:00pm - 9:00pm",
-      location: "1234 Coast Drive, San Luis Obispo, CA",
-      attendees: ""
-    },
-    {
-      id: 3,
-      title: "Yoga Session",
-      date: "Nov. 15",
-      time: "6:00pm - 8:00pm",
-      location: "Performing Arts Center",
-      attendees: "1/5",
-    },
-    {
-      id: 4,
-      title: "Food Festival",
-      date: "Nov. 17",
-      time: "7:00pm - 9:00pm",
-      location: "Downtown",
-      attendees: ""
-    }
-  ]
+export default function Events(props) {
+  
   return (
-    <main className="relative">
+    <main className="relative flex flex-col gap-[1rem] items-stretch">
       {/* Top Tabs */}
-      <div className="flex justify-center border-b pb-2 mb-1 h-[5rem] bg-custom-beige border-b border-custom-gray">
-        <button className="font-bold text-xl border-b-2 border-black pb-1 mr-6">
+      <div className="flex gap-[1rem] justify-center items-stretch border-b px-[1.5rem] h-[5rem] bg-custom-beige border-b border-custom-gray">
+        <button className="font-semibold flex-grow text-[1.25rem] border-b-2 border-custom-dark-gray flex items-center justify-center">
           Browse
         </button>
-        <button className="text-xl text-gray-400">My Events</button>
+        <button className="flex-grow text-[1.25rem] text-custom-dark-gray flex items-center justify-center">My Events</button>
       </div>
 
       {/* Search Row */}
-      <div className="flex items-center mb-1 mt-1 p-[1rem]">
+      <div className="flex items-center px-[1.5rem]">
         {/* Search Bar */}
-        <div className="flex items-center bg-gray-100 rounded-full px-4 py-3 flex-1">
-          <Search className="h-8 w-8 text-neutral-600" />
+        <div className="flex gap-[1rem] items-center bg-custom-light-gray rounded-full px-[1rem] py-[0.75rem] flex-grow">
+          <Search className="h-6 w-6 text-custom-dark-gray" />
           <input
             placeholder="Search Events"
-            className="flex-1 bg-transparent outline-none ml-4"
+            className="flex-grow"
           />
-          <button className="text-gray-400 text-lg mr-1">✖</button>
+          <X className="text-custom-dark-gray h-6 w-6">✖</X>
         </div>
 
         {/* Funnel Icon */}
         <button className="ml-3">
-          <Funnel className="h-8 w-8 text-neutral-700" />
+          <Funnel className="h-6 w-6 text-custom-dark-gray" />
         </button>
       </div>
 
       {/* Event Cards */}
-      <div className="space-y-2 mb-1 px-[1rem]">
-        {events.map((event) => (
+      <div className="space-y-[1rem] px-[1.5rem]">
+        {props.events.map((event) => (
           <EventCard
             linkTo={`/events/${event.id}`}
             id={event.id}
@@ -89,10 +57,9 @@ export default function Events() {
       </div>
 
       {/* Floating + Button */}
-      <Link to={"/events/create"}>
-        <button className="w-20 h-20 bg-blue-400 text-white text-6xl rounded-full fixed bottom-24 right-136 flex items-center justify-center shadow-lg">
-          +
-        </button>
+      <Link to={"/events/create"} className="absolute bottom-[1.75rem] right-[1.75rem]">
+        <Plus className="w-15 h-15 bg-custom-dark-blue text-white rounded-full flex items-center justify-center shadow-md p-[0.5rem]">
+        </Plus>
       </Link>
 
     </main>

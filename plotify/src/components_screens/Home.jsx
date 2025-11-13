@@ -48,8 +48,8 @@ export default function Home(props) {
     );
   return (
     <main className="overflow-scroll flex flex-col gap-[1rem]">
-      <div className="flex items-center gap-[1rem] p-[1rem] bg-custom-beige h-[5rem] border-b border-custom-gray">
-        <div className="size-[3rem] overflow-hidden flex items-center justify-center rounded-full">
+      <div className="flex items-center gap-[1rem] px-[1.5rem] py-[1rem] bg-custom-beige h-[5rem] border-b border-custom-gray">
+        <div className="h-full aspect-square overflow-hidden flex items-center justify-center rounded-full">
           <img
             className="w-full"
             alt="John Doe"
@@ -58,15 +58,15 @@ export default function Home(props) {
         </div>
         <p className="font-bold text-[1.125rem]">John Doe</p>
       </div>
-      <div className="px-[1rem]">
-        <div className="flex justify-between items-center">
+      <div className="px-[1.5rem]">
+        <div className="flex justify-between items-center mb-[0.5rem]">
           <h2 className="text-[1.25rem] font-semibold">Hosting</h2>
-          <Link to="/events">See All</Link>
+          <Link to="/events" className="text-custom-green underline underline-offset-4">See All</Link>
         </div>
         {!getSoonestEventHosting() ? (
           <p>
             You aren't hosting any events.{" "}
-            <Link to="/events/create">Create Event</Link>
+            <Link to="/events/create" className="text-custom-green underline underline-offset-4">Create Event</Link>
           </p>
         ) : (
           <EventCard
@@ -80,15 +80,15 @@ export default function Home(props) {
           />
         )}
       </div>
-      <div className="px-[1rem]">
-        <div className="flex justify-between items-center">
+      <div className="px-[1.5rem]">
+        <div className="flex justify-between items-center mb-[0.5rem]">
           <h2 className="text-[1.25rem] font-semibold">Attending</h2>
-          <Link to="/events">See All</Link>
+          <Link to="/events" className="text-custom-green underline underline-offset-4">See All</Link>
         </div>
         {!getSoonestEventAttending() ? (
           <p>
             You aren't attending any events.{" "}
-            <Link to="/events">Browse Events</Link>
+            <Link to="/events" className="text-custom-green underline underline-offset-4">Browse Events</Link>
           </p>
         ) : (
           <EventCard
@@ -102,20 +102,24 @@ export default function Home(props) {
           />
         )}
       </div>
-      <div className="px-[1rem]">
-        <div className="flex justify-between items-center">
+      <div className="px-[1.5rem]">
+        <div className="flex justify-between items-center mb-[0.5rem]">
           <h2 className="text-[1.25rem] font-semibold">Frequently Attended</h2>
-          <Link to="/events">See All</Link>
         </div>
+        <div className="flex flex-col gap-[1rem]">
         <EventCard
-          linkTo="/home"
-          id="1"
-          eventTitle="Event Title"
-          eventDate="Nov. 10"
-          eventTime="8:30am – 9:00am"
-          eventLocation="UU Plaza"
-          eventCapacity="2/10"
+          linkTo="/"
+          eventLocation="Frog n/ Peach Pub"
         />
+        <EventCard
+          linkTo="/"
+          eventLocation="Black Sheep Bar and Grill"
+        />
+        <EventCard
+          linkTo="/"
+          eventLocation="Woodstock's Pizza SLO"
+        />
+        </div>
       </div>
     </main>
   );

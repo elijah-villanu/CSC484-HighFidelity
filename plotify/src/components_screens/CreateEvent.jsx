@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { ArrowLeft, Tag as TagIcon } from "lucide-react";
+import { ArrowLeft as BackIcon, Tag as TagIcon } from "lucide-react";
 import Tag from "./components/Tag";
 import { useState } from "react";
 
@@ -56,34 +56,31 @@ export default function CreateEvent(props) {
 
   const navigate = useNavigate();
   return (
-    <div>
+    <main className="flex flex-col gap-[1rem]">
       {/* Header */}
-      <div className="flex items-center gap-[0.75rem] p-[1rem] border-b border-neutral-300">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-lg hover:bg-neutral-200 transition"
-        >
-          <ArrowLeft className="h-5 w-5 text-neutral-800" />
+      <div className="flex items-center gap-[1rem] px-[1.5rem] border-b border-neutral-300 bg-custom-beige h-[5rem]">
+        <button onClick={() => navigate(-1)}>
+          <BackIcon className="h-5 w-5 text-custom-dark-gray" />
         </button>
-        <h1 className="text-lg font-semibold text-neutral-800">New Event</h1>
+        <h1 className="text-[1.25rem] font-semibold">New Event</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col m-6 gap-8">
+      <form onSubmit={handleSubmit} className="flex flex-col px-[1.5rem] gap-[2rem]">
         {/* Name and locations fields */}
         <div>
-          <h1>Name</h1>
+          <h2>Name</h2>
           <input
             type="text"
             id="title"
-            className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
+            className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
         </div>
         <div>
-          <h1>Location</h1>
+          <h2>Location</h2>
           <input
             type="text"
             id="location"
-            className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
+            className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
         </div>
 
@@ -94,7 +91,7 @@ export default function CreateEvent(props) {
             <input
               type="text"
               id="from"
-              className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
+              className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
             ></input>
           </div>
           <div>
@@ -102,31 +99,31 @@ export default function CreateEvent(props) {
             <input
               type="text"
               id="to"
-              className="pt-1 pb-1 border-b-2 border-gray-400 w-full outline-none focus:border-b-2 focus:border-black"
+              className="pt-[0.25rem] pb-[0.25rem] border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
             ></input>
           </div>
         </div>
-        <button className="p-1 -mt-5 bg-custom-gray max-w-20 rounded-sm">
+        <button className="py-[0.25rem] px-[0.5rem] -mt-[1rem] bg-custom-blue w-max rounded-md">
           Add Day
         </button>
 
         {/* Description field */}
         <div>
-          <h2 className="mb-3">Description</h2>
+          <h2 className="mb-[0.5rem]">Description</h2>
           <textarea
             rows="3"
             id="description"
-            className="outline-1 outline-grey w-full p-1"
+            className="outline-1 outline-custom-dark-gray w-full p-[0.5rem] rounded-md focus:outline-black"
           ></textarea>
         </div>
 
         {/* Tags field */}
         <div>
-          <div className="mb-2 flex flex-row items-center gap-1">
-            <TagIcon className="h-6" />
+          <div className="mb-[0.5rem] flex flex-row items-center gap-[0.5rem]">
+            <TagIcon className="h-6 text-custom-dark-gray" />
             <h2>Tags</h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-[0.75rem]">
             {tags.map((tag) => (
               <Tag
                 tagKey={tag.key}
@@ -139,12 +136,12 @@ export default function CreateEvent(props) {
         </div>
 
         {/* Create event button */}
-        <div className="flex-col flex bg-custom-light-blue rounded-sm h-9 hover:bg-custom-blue">
-          <button className="h-full w-full cursor-pointer" type="submit">
-            <b>CREATE</b>
+        <div className="p-[1rem] px-[1.5rem]">
+          <button className="w-full rounded-2xl p-3 text-center  font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 bg-custom-dark-blue text-white focus:ring-custom-dark-blue" type="submit">
+            Create Event
           </button>
         </div>
       </form>
-    </div>
+    </main>
   );
 }

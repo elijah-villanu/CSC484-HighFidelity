@@ -93,7 +93,7 @@ function App() {
 
         <Route path="/home" element={<Home events={events}/>} />
 
-        <Route path="/events" element={<Events />} />
+        <Route path="/events" element={<Events events={events} />} />
 
         <Route path="/events/:eventId" element={<SpecificEvent events={events} />} />
 
