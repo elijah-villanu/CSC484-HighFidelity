@@ -58,7 +58,7 @@ export default function CreateEvent(props) {
   return (
     <main className="flex flex-col gap-[1rem]">
       {/* Header */}
-      <div className="flex items-center gap-[1rem] px-[1.5rem] border-b border-neutral-300 bg-custom-beige h-[5rem]">
+      <div className="flex items-center gap-[1rem] px-[1.5rem] border-b border-neutral-300 bg-custom-beige min-h-[5rem]">
         <button onClick={() => navigate(-1)}>
           <BackIcon className="h-5 w-5 text-custom-dark-gray" />
         </button>
