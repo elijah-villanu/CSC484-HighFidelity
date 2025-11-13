@@ -62,7 +62,7 @@ export default function SpecificEvent({ events = [] }) {
   return (
     <main className="overflow-scroll flex flex-col gap-[1rem] bg-white text-neutral-900 min-h-screen pb-[6rem]">
       {/* Header */}
-      <div className="flex items-center gap-[0.75rem] p-[1rem] border-b border-neutral-300">
+      <div className="flex items-center gap-[0.75rem] p-[1rem] border-b border-custom-gray h-[5rem] bg-custom-beige">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-neutral-200 transition">
           <ArrowLeft className="h-5 w-5 text-neutral-800" />
         </button>
