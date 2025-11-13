@@ -89,9 +89,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home events={events}/>} />
 
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<Home events={events}/>} />
 
         <Route path="/events" element={<Events />} />
 
