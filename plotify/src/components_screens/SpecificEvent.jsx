@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar as CalendarIcon,
@@ -95,7 +95,7 @@ export default function SpecificEvent({ events = [] }) {
               <li className="flex items-center gap-3">
                 <Users className="h-4 w-4 text-neutral-600" />
                 <span>
-                    {cap ? `${goingCount}/${cap}` : event.attendees || "0/0"}
+                {cap ? `${goingCount}/${cap}` : event.attendees || "0/0"}
                 </span>
               </li>
             </ul>
@@ -171,9 +171,11 @@ export default function SpecificEvent({ events = [] }) {
                             </span>
                           </div>
                         )}
-                        <button className="rounded-lg p-1 hover:bg-neutral-200">
-                          <MessageSquare className="h-4 w-4" />
-                        </button>
+                        <Link to = {"/events/conversation"}>
+                            <button className="rounded-lg p-1 hover:bg-neutral-200">
+                                <MessageSquare className="h-4 w-4" />
+                            </button>
+                        </Link>
                       </div>
                     </li>
                   ))}
