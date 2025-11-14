@@ -20,4 +20,8 @@
 
 * Elijah
 * Arya
+    1) Designed "All Events" page on Figma mockup
+    2) Contributed to Mood Board
+    3) Coded All Events page
+    4) Contributed to coding banner for event creation notification
 * Jake
