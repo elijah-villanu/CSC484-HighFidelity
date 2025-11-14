@@ -19,6 +19,13 @@
     10) Unified design of prototype in development
 
 * Elijah
+    1) Designed "Create Event" page on Figma mockup
+    2) Create GitHub Repo
+    3) Contributed to Mood Board
+    4) Contributed to development brainstorming
+    5) Coded create event page and relevant callbacks
+    6) Suggested and refactored to dynamic behavior using states
+    
 * Arya
     1) Designed "All Events" page on Figma mockup
     2) Contributed to Mood Board
