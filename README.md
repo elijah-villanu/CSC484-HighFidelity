@@ -1,4 +1,23 @@
 # CSC484-HighFidelity
 
 ## To-Run
-CD into plotify then npm run dev
+1) CD into plotify
+2) npm i to install dependencies
+3) npm run dev
+
+## Team Contributions
+* Issac
+    1) Set up Figma for mockup of styles before coding
+    2) Designed Home Screen
+    3) Contributed to Mood Board
+    4) Set up Vite+React+JS+Tailwind
+    5) Set up Routing for Screens
+    6) Set up Tailwind Themes for Color Variables
+    7) Coded Home Screen
+    8) Coded Navigation Bar
+    9) Contributed to development brainstorming
+    10) Unified design of prototype in development
+
+* Elijah
+* Arya
+* Jake
