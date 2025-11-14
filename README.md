@@ -24,4 +24,10 @@
     2) Contributed to Mood Board
     3) Coded All Events page
     4) Contributed to coding banner for event creation notification
+
 * Jake
+    1) Designed the event details page on Figma wireframe
+    2) Coded the event details page
+    3) contributed to development brainstorming
+    4) Linked event details page to conversation page
+    5) Created events on the app.jsx page for their details to be displayed
