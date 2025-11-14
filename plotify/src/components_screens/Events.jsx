@@ -16,7 +16,7 @@ export default function Events(props) {
   const [createdFlag, setCreatedFlag] = useState(false)
 
   useEffect(() => {
-    if (loc.state?.created){
+    if (loc.state?.created === true){
       setCreatedFlag(true)
     }
     // Only render for three seconds

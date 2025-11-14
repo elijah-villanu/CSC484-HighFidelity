@@ -49,7 +49,9 @@ export default function SpecificEvent({ events = [] }) {
         <div className="text-center">
           <p className="text-lg font-semibold">Event not found</p>
           <button
-            onClick={() => navigate(-1)}
+            onClick={navigate("/events", {
+                      state: { created: true },
+                    })}
             className="mt-3 rounded-lg px-4 py-2 bg-neutral-200 hover:bg-neutral-300"
           >
             Go back
