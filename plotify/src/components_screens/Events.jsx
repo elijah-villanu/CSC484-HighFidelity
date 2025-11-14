@@ -29,7 +29,12 @@ export default function Events(props) {
   
   return (
     <main className="relative flex flex-col gap-[1rem] items-stretch">
-      {createdFlag && <h1>Event Created</h1>}
+      {createdFlag && (
+      <div className="absolute top-0 left-0 w-full bg-green-500 text-white text-center py-3 font-semibold shadow-md z-50">
+      Event Created!
+      </div>
+      )}
+
       {/* Top Tabs */}
       <div className="flex gap-[1rem] justify-center items-stretch border-b px-[1.5rem] h-[5rem] bg-custom-beige border-b border-custom-gray">
         <button className="font-semibold flex-grow text-[1.25rem] border-b-2 border-custom-dark-gray flex items-center justify-center">
