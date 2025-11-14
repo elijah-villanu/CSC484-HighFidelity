@@ -1,5 +1,5 @@
-import { Link } from "react-router";
-import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from "react-router";
+// import React, {useState, useEffect} from 'react';
 import {
   Calendar as CalendarIcon,
   X,
@@ -12,9 +12,12 @@ import {
 import EventCard from "./components/EventCard";
 
 export default function Events(props) {
+  const loc = useLocation()
+  const createdFlag = loc.state?.created
   
   return (
     <main className="relative flex flex-col gap-[1rem] items-stretch">
+      {createdFlag && <h1>Event Created</h1>}
       {/* Top Tabs */}
       <div className="flex gap-[1rem] justify-center items-stretch border-b px-[1.5rem] h-[5rem] bg-custom-beige border-b border-custom-gray">
         <button className="font-semibold flex-grow text-[1.25rem] border-b-2 border-custom-dark-gray flex items-center justify-center">

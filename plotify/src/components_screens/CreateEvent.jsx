@@ -45,6 +45,10 @@ export default function CreateEvent(props) {
       attendees: "",
     };
     props.create(newEvent);
+    // Once event is created, go back to events page and set flag event is created
+    navigate("/events", {
+      state: { created: true }
+    });
   };
 
   // Set on flag when clicked
