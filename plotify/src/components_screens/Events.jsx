@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-// import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Calendar as CalendarIcon,
   X,
@@ -13,7 +13,19 @@ import EventCard from "./components/EventCard";
 
 export default function Events(props) {
   const loc = useLocation()
-  const createdFlag = loc.state?.created
+  const [createdFlag, setCreatedFlag] = useState(false)
+
+  useEffect(() => {
+    if (loc.state?.created === true){
+      setCreatedFlag(true)
+    }
+    // Only render for three seconds
+    const timer = setTimeout(() => {
+      setCreatedFlag(false)
+    }, 3000)
+    // Need to cleanup
+    return () => clearTimeout(timer)
+  },[loc.state])
   
   return (
     <main className="relative flex flex-col gap-[1rem] items-stretch">
