@@ -181,11 +181,12 @@ export default function SpecificEvent({ events = [] }) {
 
                       <div className="flex items-center gap-[0.5rem] text-custom-dark-gray">
                         {p.carSeats && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Car className="h-4 w-4" />
-                            <span>
-                              {p.carSeats.taken}/{p.carSeats.total}
-                            </span>
+                          <div className="flex flex-col items-center text-xs leading-tight">
+                            <div className="flex items-center gap-1">
+                              <Car className="h-4 w-4" />
+                              <span>{p.carSeats.taken}/{p.carSeats.total}</span>
+                            </div>
+                            <span className="text-[0.625rem] text-custom-dark-gray">carpool</span>
                           </div>
                         )}
                         <Link to = {"/conversation"}>
