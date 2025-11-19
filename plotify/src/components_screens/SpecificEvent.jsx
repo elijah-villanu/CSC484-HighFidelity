@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   ArrowLeft as BackIcon,
@@ -17,7 +17,17 @@ export default function SpecificEvent({ events = [] }) {
   const navigate = useNavigate();
   const { eventId } = useParams();
   const { state } = useLocation();
-
+  const RSVP_KEY = "rsvps"; // { [eventId]: true|false }
+  const getSavedRsvps = () => {
+    try {
+      return JSON.parse(localStorage.getItem(RSVP_KEY) || "{}");
+    } catch {
+      return {};
+    }
+  };
+  const setSavedRsvps = (obj) => {
+    localStorage.setItem(RSVP_KEY, JSON.stringify(obj));
+  }
   // Prefer events passed from App; fallback to navigation state if present.
   const allEvents = useMemo(() => {
     if (events && events.length) return events;
@@ -30,7 +40,16 @@ export default function SpecificEvent({ events = [] }) {
     return allEvents.find((e) => Number(e.id) === idNum);
   }, [allEvents, eventId]);
 
-  const [isRsvped, setIsRsvped] = useState(false);
+  const [isRsvped, setIsRsvped] = useState(() => {
+    const saved = getSavedRsvps();
+    return !!(event && saved[event.id]);
+  });
+
+// If you navigate to a different event, resync the button from localStorage
+  useEffect(() => {
+    const saved = getSavedRsvps();
+    setIsRsvped(!!(event && saved[event.id]));
+  }, [eventId]); // eslint-disable-line react-hooks/exhaustive-deps
   const [expanded, setExpanded] = useState(false);
 
   // compute attendee numbers safely
@@ -162,11 +181,12 @@ export default function SpecificEvent({ events = [] }) {
 
                       <div className="flex items-center gap-[0.5rem] text-custom-dark-gray">
                         {p.carSeats && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Car className="h-4 w-4" />
-                            <span>
-                              {p.carSeats.taken}/{p.carSeats.total}
-                            </span>
+                          <div className="flex flex-col items-center text-xs leading-tight">
+                            <div className="flex items-center gap-1">
+                              <Car className="h-4 w-4" />
+                              <span>{p.carSeats.taken}/{p.carSeats.total}</span>
+                            </div>
+                            <span className="text-[0.625rem] text-custom-dark-gray">carpool</span>
                           </div>
                         )}
                         <Link to = {"/conversation"}>
@@ -186,7 +206,18 @@ export default function SpecificEvent({ events = [] }) {
             {/* RSVP button */}
             <div className="p-[1rem] px-[1.5rem]">
               <button
-                onClick={() => setIsRsvped((v) => !v)}
+                onClick={() => {
+                  setIsRsvped((prev) => {
+                    const next = !prev;
+                    const saved = getSavedRsvps();
+                    if (event?.id != null) {
+                      if (next) saved[event.id] = true;
+                      else delete saved[event.id];
+                      setSavedRsvps(saved);
+                    }
+                    return next;
+                  });
+                }}
                 className={`w-full rounded-2xl p-3 text-center  font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                   isRsvped
                     ? "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600"
