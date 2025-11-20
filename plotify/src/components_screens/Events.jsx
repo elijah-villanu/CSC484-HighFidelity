@@ -15,6 +15,11 @@ export default function Events(props) {
   const loc = useLocation()
   const [createdFlag, setCreatedFlag] = useState(false)
 
+  const [searchTerm, setSearchTerm] = useState("")
+  const filteredEvents = props.events.filter((event) =>
+  event.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
   useEffect(() => {
     if (loc.state?.created === true){
       setCreatedFlag(true)
@@ -50,9 +55,13 @@ export default function Events(props) {
           <Search className="h-6 w-6 text-custom-dark-gray" />
           <input
             placeholder="Search Events"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-grow"
           />
-          <X className="text-custom-dark-gray h-6 w-6">✖</X>
+          <button onClick={() => setSearchTerm("")}>
+            <X className="text-custom-dark-gray h-6 w-6">✖</X>
+          </button>
         </div>
 
         {/* Funnel Icon */}
@@ -63,17 +72,18 @@ export default function Events(props) {
 
       {/* Event Cards */}
       <div className="space-y-[1rem] px-[1.5rem]">
-        {props.events.map((event) => (
-          <EventCard
-            linkTo={`/events/${event.id}`}
-            id={event.id}
-            eventTitle={event.title}
-            eventDate={event.date}
-            eventTime={event.time}
-            eventLocation={event.location}
-            eventCapacity={event.attendees}
-          />
-        ))}
+        {filteredEvents.map((event) => (
+        <EventCard
+    key={event.id}
+    linkTo={`/events/${event.id}`}
+    id={event.id}
+    eventTitle={event.title}
+    eventDate={event.date}
+    eventTime={event.time}
+    eventLocation={event.location}
+    eventCapacity={event.attendees}
+  />
+))}
       </div>
 
       {/* Floating + Button */}
