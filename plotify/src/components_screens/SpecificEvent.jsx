@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState, useContext } from "react";
 import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   ArrowLeft as BackIcon,
@@ -13,22 +13,18 @@ import {
   ChevronUp,
 } from "lucide-react";
 
+// IMPORTANT: App.jsx is one folder up from components_screens
+import { RsvpContext } from "../App";
+
 export default function SpecificEvent({ events = [] }) {
   const navigate = useNavigate();
   const { eventId } = useParams();
   const { state } = useLocation();
-  const RSVP_KEY = "rsvps"; // { [eventId]: true|false }
-  const getSavedRsvps = () => {
-    try {
-      return JSON.parse(localStorage.getItem(RSVP_KEY) || "{}");
-    } catch {
-      return {};
-    }
-  };
-  const setSavedRsvps = (obj) => {
-    localStorage.setItem(RSVP_KEY, JSON.stringify(obj));
-  }
-  // Prefer events passed from App; fallback to navigation state if present.
+
+  // Global in-memory RSVP (survives navigation, resets on full reload)
+  const { isRsvped, toggleRsvp, currentUserName } = useContext(RsvpContext);
+
+  // Prefer events passed from App; fallback to state.event if navigated with state
   const allEvents = useMemo(() => {
     if (events && events.length) return events;
     if (state?.event) return [state.event];
@@ -40,27 +36,7 @@ export default function SpecificEvent({ events = [] }) {
     return allEvents.find((e) => Number(e.id) === idNum);
   }, [allEvents, eventId]);
 
-  const [isRsvped, setIsRsvped] = useState(() => {
-    const saved = getSavedRsvps();
-    return !!(event && saved[event.id]);
-  });
-
-// If you navigate to a different event, resync the button from localStorage
-  useEffect(() => {
-    const saved = getSavedRsvps();
-    setIsRsvped(!!(event && saved[event.id]));
-  }, [eventId]); // eslint-disable-line react-hooks/exhaustive-deps
   const [expanded, setExpanded] = useState(false);
-
-  // compute attendee numbers safely
-  const goingCount = event?.going?.length || 0;
-  let cap = 0;
-  if (typeof event?.capacity === "number") {
-    cap = event.capacity;
-  } else if (event?.attendees) {
-    const parts = String(event.attendees).split("/");
-    cap = Number(parts[1]) || 0;
-  }
 
   if (!event) {
     return (
@@ -68,9 +44,7 @@ export default function SpecificEvent({ events = [] }) {
         <div className="text-center">
           <p className="text-lg font-semibold">Event not found</p>
           <button
-            onClick={navigate("/events", {
-                      state: { created: true },
-                    })}
+            onClick={() => navigate("/events")}
             className="mt-3 rounded-lg px-4 py-2 bg-neutral-200 hover:bg-neutral-300"
           >
             Go back
@@ -78,6 +52,25 @@ export default function SpecificEvent({ events = [] }) {
         </div>
       </main>
     );
+  }
+
+  // Base going list from event, plus "you" if RSVPed for this event
+  const baseGoing = event.going ?? [];
+
+  const goingWithYou = useMemo(() => {
+    const already = baseGoing.some((p) => p.name === currentUserName);
+    if (!isRsvped(event.id)) return baseGoing;
+    return already ? baseGoing : [...baseGoing, { name: currentUserName }];
+  }, [baseGoing, currentUserName, event, isRsvped]);
+
+  // Counts/capacity
+  const goingCount = goingWithYou.length;
+  let cap = 0;
+  if (typeof event.capacity === "number") {
+    cap = event.capacity;
+  } else if (event.attendees) {
+    const parts = String(event.attendees).split("/");
+    cap = Number(parts[1]) || 0;
   }
 
   return (
@@ -90,12 +83,14 @@ export default function SpecificEvent({ events = [] }) {
         <h1 className="font-bold text-[1.25rem]">Event Details</h1>
       </div>
 
-      {/* Event content */}
+      {/* Event card */}
       <div className="px-[1.5rem] pb-[1rem]">
-        <div className="bg-white rounded-xl shadow-md border border-custom-light-gray">
+        <div className="bg-white rounded-xl shadow-md border border-custom-light-gray overflow-hidden">
           <div className="p-[1rem]">
+            {/* Title */}
             <h2 className="text-xl font-semibold">{event.title}</h2>
 
+            {/* Meta */}
             <ul className="mt-3 space-y-2 text-sm pb-[1rem]">
               <li className="flex items-center gap-3">
                 <CalendarIcon className="h-4 w-4 text-custom-dark-gray" />
@@ -116,12 +111,12 @@ export default function SpecificEvent({ events = [] }) {
               <li className="flex items-center gap-3">
                 <Users className="h-4 w-4 text-custom-dark-gray" />
                 <span>
-                {cap ? `${goingCount}/${cap}` : event.attendees || "0/0"}
+                  {cap ? `${goingCount}/${cap}` : event.attendees || goingCount}
                 </span>
               </li>
             </ul>
 
-            {/* Description with read more/less */}
+            {/* Description */}
             <div className="border-y border-custom-light-gray py-[1rem]">
               <p className="text-[0.875rem] text-black">
                 <span className="font-semibold">Description: </span>
@@ -157,74 +152,84 @@ export default function SpecificEvent({ events = [] }) {
                 Who’s going?
               </div>
 
-              {event.going && event.going.length > 0 ? (
+              {goingWithYou.length > 0 ? (
                 <ul className="space-y-2">
-                  {event.going.map((p) => (
-                    <li
-                      key={p.name}
-                      className="flex items-center justify-between rounded-2xl border border-custom-gray px-[0.75rem] py-[0.5rem]"
-                    >
-                      <div className="flex items-center gap-[0.5rem]">
-                        <div className="h-6 w-6 rounded-full bg-custom-light-gray flex items-center justify-center text-[0.7rem] font-semibold text-custom-dark-gray">
-                          {p.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </div>
-                        <p className="flex items-center text-[0.875rem] text-black gap-[0.5rem]">
-                          {p.name}
-                          {p.isHost ? (
-                            <span className="text-[0.75rem] text-custom-dark-gray">(host)</span>
-                          ) : null}
-                        </p>
-                      </div>
+                  {goingWithYou.map((p) => {
+                    const initials = p.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("");
+                    const isYou = p.name === currentUserName;
 
-                      <div className="flex items-center gap-[0.5rem] text-custom-dark-gray">
-                        {p.carSeats && (
-                          <div className="flex flex-col items-center text-xs leading-tight">
-                            <div className="flex items-center gap-1">
-                              <Car className="h-4 w-4" />
-                              <span>{p.carSeats.taken}/{p.carSeats.total}</span>
-                            </div>
-                            <span className="text-[0.625rem] text-custom-dark-gray">carpool</span>
+                    return (
+                      <li
+                        key={p.name}
+                        className="flex items-center justify-between rounded-2xl border border-custom-gray px-[0.75rem] py-[0.5rem]"
+                      >
+                        <div className="flex items-center gap-[0.5rem]">
+                          <div className="h-6 w-6 rounded-full bg-custom-light-gray flex items-center justify-center text-[0.7rem] font-semibold text-custom-dark-gray">
+                            {initials}
+                          </div>
+                          <p className="flex items-center text-[0.875rem] text-black gap-[0.5rem]">
+                            {p.name}
+                            {p.isHost ? (
+                              <span className="text-[0.75rem] text-custom-dark-gray">
+                                (host)
+                              </span>
+                            ) : null}
+                            {isYou ? (
+                              <span className="text-[0.75rem] text-custom-dark-gray">
+                                (you)
+                              </span>
+                            ) : null}
+                          </p>
+                        </div>
+
+                        {/* Hide icons for yourself */}
+                        {!isYou && (
+                          <div className="flex items-center gap-[0.5rem] text-custom-dark-gray">
+                            {p.carSeats && (
+                              <div className="flex flex-col items-center text-xs leading-tight">
+                                <div className="flex items-center gap-1">
+                                  <Car className="h-4 w-4" />
+                                  <span>
+                                    {p.carSeats.taken}/{p.carSeats.total}
+                                  </span>
+                                </div>
+                                <span className="text-[0.625rem] text-custom-dark-gray">
+                                  carpool
+                                </span>
+                              </div>
+                            )}
+                            <Link to={"/conversation"}>
+                              <button>
+                                <MessageSquare className="h-4 w-4" />
+                              </button>
+                            </Link>
                           </div>
                         )}
-                        <Link to = {"/conversation"}>
-                            <button>
-                                <MessageSquare className="h-4 w-4" />
-                            </button>
-                        </Link>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
-                <div className="text-sm text-custom-dark-gray">No attendees yet.</div>
+                <div className="text-sm text-custom-dark-gray">
+                  No attendees yet.
+                </div>
               )}
             </div>
 
             {/* RSVP button */}
             <div className="p-[1rem] px-[1.5rem]">
               <button
-                onClick={() => {
-                  setIsRsvped((prev) => {
-                    const next = !prev;
-                    const saved = getSavedRsvps();
-                    if (event?.id != null) {
-                      if (next) saved[event.id] = true;
-                      else delete saved[event.id];
-                      setSavedRsvps(saved);
-                    }
-                    return next;
-                  });
-                }}
-                className={`w-full rounded-2xl p-3 text-center  font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  isRsvped
+                onClick={() => toggleRsvp(event.id)}
+                className={`w-full rounded-2xl p-3 text-center font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  isRsvped(event.id)
                     ? "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600"
                     : "bg-custom-dark-blue text-white focus:ring-custom-dark-blue"
                 }`}
               >
-                {isRsvped ? "RSVP’d" : "RSVP"}
+                {isRsvped(event.id) ? "RSVP’d" : "RSVP"}
               </button>
             </div>
           </div>
