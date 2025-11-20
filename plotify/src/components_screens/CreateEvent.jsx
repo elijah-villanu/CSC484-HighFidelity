@@ -73,6 +73,7 @@ export default function CreateEvent(props) {
       capacity: 5,
       description: event.currentTarget.elements.description.value,
       going: [],
+      tags: tags.filter(t => t.on).map(t => t.name)
     };
     props.create(newEvent);
     // Once event is created, go back to events page and set flag event is created

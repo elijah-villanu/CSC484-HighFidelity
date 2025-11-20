@@ -36,6 +36,7 @@ function App() {
         { name: "Bob R.", carSeats: { taken: 1, total: 4 } },
         { name: "Jane L.", isHost: true },
       ],
+      tags: ["Casual", "Food"]
     },
     {
       id: 2,
@@ -49,6 +50,7 @@ function App() {
       description:
         "We’re watching Pitch Perfect on a projector in the backyard. Blankets, snacks, and aca-tunes provided!",
       going: [],
+      tags: ["Casual", "Entertainment", "Outdoor"]
     },
     {
       id: 3,
@@ -62,6 +64,7 @@ function App() {
       description:
         "Gentle vinyasa session suitable for all levels. Bring your mat and water.",
       going: [{ name: "Sam T." }],
+      tags: ["Casual"]
     },
     {
       id: 4,
@@ -75,6 +78,7 @@ function App() {
       description:
         "Explore local vendors downtown. We’ll walk, sample, and hang together.",
       going: [],
+      tags: ["High Energy", "Entertainment", "Outdoor", "Food"]
     },
   ];
 
