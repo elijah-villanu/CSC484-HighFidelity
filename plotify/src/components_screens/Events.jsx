@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router";
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import { RsvpContext } from "../App";
 import {
   Calendar as CalendarIcon,
   X,
@@ -14,7 +15,7 @@ import EventCard from "./components/EventCard";
 export default function Events(props) {
   const loc = useLocation()
   const [createdFlag, setCreatedFlag] = useState(false)
-
+  const { isRsvped } = useContext(RsvpContext);
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedTags, setSelectedTags] = useState([])
   const filteredEvents = props.events.filter(event => {
@@ -30,7 +31,6 @@ export default function Events(props) {
 
   return matchesSearch && matchesTags;
 });
-
 
 const allTags = ["Casual", "High Energy", "Entertainment", "Food", "Outdoor"];
 
@@ -94,8 +94,6 @@ const toggleTagDropdown = () => {
           
         </div>
 
-        
-
         {/* Funnel Icon */}
         <div className="ml-3 relative">
   <button onClick={toggleTagDropdown}>
@@ -140,6 +138,8 @@ const toggleTagDropdown = () => {
     eventTime={event.time}
     eventLocation={event.location}
     eventCapacity={event.attendees}
+    isRsvped={isRsvped(event.id)}
+    
   />
 ))}
       </div>
