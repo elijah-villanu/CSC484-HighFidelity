@@ -5,6 +5,8 @@
 2) npm i to install dependencies
 3) npm run dev
 
+For best, experience, open in inspect mode and toggle on device view using dimensions for iPad Air zooming out to fit to window.
+
 ## Team Contributions
 * Issac
     1) Set up Figma for mockup of styles before coding
