@@ -37,7 +37,7 @@ function App() {
         { name: "Bob R.", carSeats: { taken: 1, total: 4 } },
         { name: "Jane L.", isHost: true },
       ],
-      tags: ["Casual", "Food"]
+      tags: ["Casual", "Food"],
     },
     {
       id: 2,
@@ -51,7 +51,7 @@ function App() {
       description:
         "We’re watching Pitch Perfect on a projector in the backyard. Blankets, snacks, and aca-tunes provided!",
       going: [],
-      tags: ["Casual", "Entertainment", "Outdoor"]
+      tags: ["Casual", "Entertainment", "Outdoor"],
     },
     {
       id: 3,
@@ -65,7 +65,7 @@ function App() {
       description:
         "Gentle vinyasa session suitable for all levels. Bring your mat and water.",
       going: [{ name: "Sam T." }],
-      tags: ["Casual"]
+      tags: ["Casual"],
     },
     {
       id: 4,
@@ -79,14 +79,13 @@ function App() {
       description:
         "Explore local vendors downtown. We’ll walk, sample, and hang together.",
       going: [],
-      tags: ["High Energy", "Entertainment", "Outdoor", "Food"]
+      tags: ["High Energy", "Entertainment", "Outdoor", "Food"],
     },
   ];
 
   // Id assignment will be tracked by a counter in local storage (temporary)
   const [events, setEvents] = useState(initEvents);
   localStorage.setItem("ids", initEvents.length);
-
 
   // ===== In-memory RSVP state (survives navigation, resets on full reload) =====
   const [rsvpedEvents, setRsvpedEvents] = useState(() => new Set());
@@ -111,7 +110,6 @@ function App() {
     [isRsvped, toggleRsvp]
   );
 
-  
   const handleCreate = (newEvent) => {
     // Iterate and set event id
     const newId = parseInt(localStorage.getItem("ids")) + 1;
@@ -124,9 +122,11 @@ function App() {
 
     // New events automatically RSVPs creator/host
     toggleRsvp(newId);
-    newEvent.going = [
-      { name: "You", isHost: true}
-    ];
+    newEvent.going = [{ name: "You", isHost: true }];
+  };
+
+  const handleDelete = (id) => {
+    setEvents((prev) => prev.filter((e) => e.id !== id));
   };
 
   return (
@@ -141,12 +141,17 @@ function App() {
 
           <Route
             path="/events/:eventId"
-            element={<SpecificEvent events={events} />}
+            element={
+              <SpecificEvent events={events} deleteEvent={handleDelete} />
+            }
           />
 
           <Route path="/messages" element={<Messages />} />
 
-          <Route path="/events/create" element={<CreateEvent create={handleCreate} />} />
+          <Route
+            path="/events/create"
+            element={<CreateEvent create={handleCreate} />}
+          />
 
           <Route path="/conversation" element={<Conversation />} />
 

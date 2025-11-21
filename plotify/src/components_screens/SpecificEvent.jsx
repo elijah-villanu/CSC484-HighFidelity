@@ -11,12 +11,13 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronUp,
+  Trash as DeleteIcon,
 } from "lucide-react";
 
 // IMPORTANT: App.jsx is one folder up from components_screens
 import { RsvpContext } from "../App";
 
-export default function SpecificEvent({ events = [] }) {
+export default function SpecificEvent({ events = [], deleteEvent }) {
   const navigate = useNavigate();
   const { eventId } = useParams();
   const { state } = useLocation();
@@ -56,6 +57,7 @@ export default function SpecificEvent({ events = [] }) {
 
   // Base going list from event, plus "you" if RSVPed for this event
   const baseGoing = event.going ?? [];
+  const host = event.host;
 
   const goingWithYou = useMemo(() => {
     const already = baseGoing.some((p) => p.name === currentUserName);
@@ -73,8 +75,15 @@ export default function SpecificEvent({ events = [] }) {
     cap = Number(parts[1]) || 0;
   }
 
+  const handleDeleteClick = () => {
+    deleteEvent(event.id);
+    navigate("/events");
+  };
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   return (
-    <main className="overflow-scroll flex flex-col gap-[1rem] bg-white text-neutral-900 min-h-screen pb-[6rem]">
+    <main className="overflow-scroll flex flex-col gap-[1rem] bg-white text-neutral-900 min-h-screen pb-[6rem] relative">
       {/* Header */}
       <div className="flex items-center gap-[1rem] h-[5rem] px-[1.5rem] bg-custom-beige border-b border-custom-gray">
         <button onClick={() => navigate(-1)}>
@@ -87,8 +96,20 @@ export default function SpecificEvent({ events = [] }) {
       <div className="px-[1.5rem] pb-[1rem]">
         <div className="bg-white rounded-xl shadow-md border border-custom-light-gray overflow-hidden">
           <div className="p-[1rem]">
-            {/* Title */}
-            <h2 className="text-xl font-semibold">{event.title}</h2>
+            <div className="flex items-center justify-between">
+              {/* Title */}
+              <h2 className="text-xl font-semibold">{event.title}</h2>
+              {/* Delete button */}
+              {host === currentUserName ? (
+                <button
+                  onClick={() => setConfirmOpen(true)}
+                  className="flex items-center gap-[0.5rem] w-fit rounded-2xl p-3 text-center font-semibold active:scale-[.99] text-red-800"
+                >
+                  <DeleteIcon className="h-4 w-4" />
+                  Delete Event
+                </button>
+              ) : null}
+            </div>
 
             {/* Meta */}
             <ul className="mt-3 space-y-2 text-sm pb-[1rem]">
@@ -218,7 +239,6 @@ export default function SpecificEvent({ events = [] }) {
                 </div>
               )}
             </div>
-
             {/* RSVP button */}
             <div className="p-[1rem] px-[1.5rem]">
               <button
@@ -235,6 +255,35 @@ export default function SpecificEvent({ events = [] }) {
           </div>
         </div>
       </div>
+      
+      {confirmOpen && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-[80%] max-w-sm shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Delete Event?</h2>
+            <p className="text-sm mb-6 text-neutral-700">
+              This action cannot be undone.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmOpen(false)}
+                className="flex-1 rounded-xl py-2 bg-neutral-200 text-neutral-800"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  handleDeleteClick();
+                }}
+                className="flex-1 rounded-xl py-2 bg-red-600 text-white"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
