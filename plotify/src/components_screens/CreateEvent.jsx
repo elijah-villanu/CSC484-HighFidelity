@@ -3,18 +3,18 @@ import {
   ArrowLeft as BackIcon,
   Tag as TagIcon,
   Calendar as CalendarIcon,
-  Clock as ClockIcon,
+  PersonStanding as PersonIcon,
 } from "lucide-react";
 import Tag from "./components/Tag";
 import Calendar from "./components/Calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-// Temporary tag description data structure
+// Tag description data structure
 const initTags = [
   {
     key: 1,
     name: "Casual",
-    on: true,
+    on: false,
   },
   {
     key: 2,
@@ -39,8 +39,19 @@ const initTags = [
 ];
 
 // Converts the to and from inputs to the set time
+// time inputs are 24 hours scale, convert to 12 AM/PM
 function convertTime(from, to) {
-  return `${from} - ${to}`;
+  const [fromHourStr, fromMin] = from.split(":");
+  let fromHour = parseInt(fromHourStr);
+  const fromAmPm = fromHour >= 12 ? "pm" : "am";
+  const convertedFrom = `${fromHour}:${fromMin}${fromAmPm}`;
+
+  const [toHourStr, toMin] = to.split(":");
+  let toHour = parseInt(toHourStr);
+  const toAmPm = toHour >= 12 ? "pm" : "am";
+  const convertedTo = `${toHour}:${toMin}${toAmPm}`;
+
+  return `${convertedFrom} - ${convertedTo}`;
 }
 
 // Convert to Month. Date format
@@ -56,25 +67,42 @@ export default function CreateEvent(props) {
   const [tags, setTags] = useState(initTags);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [date, setDate] = useState();
-  // const [allDay, setAllDay] = useState(false);
+  const [dayError, setDayError] = useState(false);
+  const [errors, setErrors] = useState({
+    title: "",
+    loc: "",
+    from: "",
+    to: "",
+    cap: "",
+  });
+  // Allows input validation to happen only after user clicks away from input
+  const [touched, setTouched] = useState({
+    title: false,
+    loc: false,
+    from: false,
+    to: false,
+    cap: false,
+  });
+  const [canSubmit, setCanSubmit] = useState(false);
 
+  // Can only submit if form input is valid
   const handleSubmit = (event) => {
+    event.preventDefault();
     const fromTime = event.currentTarget.elements.from.value;
     const toTime = event.currentTarget.elements.to.value;
-
-    event.preventDefault();
+    const cap = event.currentTarget.elements.cap.value;
     const newEvent = {
       title: event.currentTarget.elements.title.value,
       date: convertDate(date),
       time: convertTime(fromTime, toTime),
       location: event.currentTarget.elements.location.value,
-      attendees: "0/5",
-      host: "John Doe",
-      capacity: 5,
+      attendees: `1/${cap}`,
+      host: "You",
+      capacity: cap,
       description: event.currentTarget.elements.description.value,
-      going: [],
-      tags: tags.filter(t => t.on).map(t => t.name)
+      tags: tags.filter((t) => t.on).map((t) => t.name),
     };
+    
     props.create(newEvent);
     // Once event is created, go back to events page and set flag event is created
     navigate("/events", {
@@ -82,8 +110,39 @@ export default function CreateEvent(props) {
     });
   };
 
+  // Check all required inputs for no errors then makes button available
+  useEffect(() => {
+    const hasNoErrors = Object.values(errors).every((error) => error === "");
+    const beenTouched = Object.values(touched).every((field) => field === true);
+    if (hasNoErrors && beenTouched) {
+      setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
+    }
+  }, [errors, touched]);
+
+  const validateDate = () => {
+    if (!date) {
+      setDayError(true);
+    } else {
+      setDayError(false);
+    }
+  };
+
   const handleCalendarClick = () => {
     setCalendarOpen(!calendarOpen);
+    validateDate();
+  };
+
+  // generic handle input change applied to all required form inputs
+  const validateInput = (field, input) => {
+    if (!input) {
+      setErrors((prev) => ({
+        ...prev,
+        // if input empty, set error, else no error
+        [field]: input.trim() === "" ? "error" : "",
+      }));
+    }
   };
 
   // Set on flag when clicked
@@ -116,25 +175,54 @@ export default function CreateEvent(props) {
       >
         {/* Name and locations fields */}
         <div>
-          <h2>Name</h2>
+          <h2>
+            Event Name
+            {errors.title && touched.title && (
+              <span className="text-red-500">
+                <b> *Please Add an Event Name </b>
+              </span>
+            )}
+          </h2>
           <input
             type="text"
             id="title"
+            onBlur={(e) => {
+              setTouched((prev) => ({ ...prev, title: true }));
+              validateInput("title", e.currentTarget.value);
+            }}
             className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
         </div>
         <div>
-          <h2>Location</h2>
+          <h2>
+            Location
+            {errors.loc && touched.loc && (
+              <span className="text-red-500">
+                <b> *Please Add an Location </b>
+              </span>
+            )}
+          </h2>
           <input
             type="text"
             id="location"
+            onBlur={(e) => {
+              setTouched((prev) => ({ ...prev, loc: true }));
+              validateInput("loc", e.currentTarget.value);
+            }}
             className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
         </div>
 
         {/* Calendar inputs using React Day Picker */}
         <div>
-          <h2>Date</h2>
+          <h2>
+            Date
+            {dayError && (
+              <span className="text-red-500">
+                <b> *Please Choose a Date </b>
+              </span>
+            )}
+          </h2>
           <button
             type="button"
             onClick={handleCalendarClick}
@@ -162,32 +250,73 @@ export default function CreateEvent(props) {
         </div>
 
         {/* Time Inputs */}
-        <div className="flex flex-row justify-between gap-1">
-          <div>
-            <h2>From</h2>
+        <div className="flex flex-row justify-between gap-[2rem]">
+          <div className="w-full">
+            <h2>
+              From
+              {errors.from && touched.from && (
+                <span className="text-red-500">
+                  <b> *Please Add a Time </b>
+                </span>
+              )}
+            </h2>
             <input
-              type="text"
+              type="time"
               id="from"
+              onBlur={(e) => {
+                setTouched((prev) => ({ ...prev, from: true }));
+                validateInput("from", e.currentTarget.value);
+              }}
               className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
             ></input>
           </div>
-          <div>
-            <h2>To</h2>
+          <div className="w-full">
+            <h2>
+              To
+              {errors.to && touched.to && (
+                <span className="text-red-500">
+                  <b> *Please Add a Time </b>
+                </span>
+              )}
+            </h2>
             <input
-              type="text"
+              type="time"
               id="to"
+              onBlur={(e) => {
+                setTouched((prev) => ({ ...prev, to: true }));
+                validateInput("to", e.currentTarget.value);
+              }}
               className="pt-[0.25rem] pb-[0.25rem] border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
             ></input>
           </div>
         </div>
 
-        {/* All day toggle */}
-        <div className="flex flex-row gap-[0.75rem]">
-          <div className="flex flex-row gap-[0.5rem]">
-            <ClockIcon />
-            <h2>All Day</h2>
+        {/* Capacity field */}
+        <div>
+          <div className="flex flex-row items-center mt-[0.5rem]">
+            <PersonIcon className="h-[1.1rem]" />
+            <h2>
+              Capacity
+              {errors.cap && touched.cap && (
+                <span className="text-red-500">
+                  <b> *Please Add a Capacity </b>
+                </span>
+              )}
+            </h2>
           </div>
-          <input type="checkbox"></input>
+          <div className="flex flex-row justify-between gap-[2rem]">
+            <input
+              type="number"
+              step="1"
+              id="cap"
+              onBlur={(e) => {
+                setTouched((prev) => ({ ...prev, cap: true }));
+                validateInput("cap", e.currentTarget.value);
+              }}
+              className="mt-[0.8rem] pt-[0.3rem] pb-[0.3rem] pl-[1rem] outline-1 rounded-sm outline-custom-dark-gray w-full"
+            ></input>
+            <div className="w-full"></div>
+          </div>
         </div>
 
         {/* Description field */}
@@ -220,12 +349,22 @@ export default function CreateEvent(props) {
 
         {/* Create event button */}
         <div className="p-[1rem] px-[1.5rem]">
-          <button
-            className="w-full rounded-2xl p-3 text-center font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 bg-custom-dark-blue text-white focus:ring-custom-dark-blue"
-            type="submit"
-          >
-            Create Event
-          </button>
+          {canSubmit ? (
+            <button
+              className="w-full rounded-2xl p-3 text-center font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 bg-custom-dark-blue text-white focus:ring-custom-dark-blue"
+              type="submit"
+            >
+              Create Event
+            </button>
+          ) : (
+            <button
+              className="w-full rounded-2xl p-3 text-center font-semibold shadow bg-custom-gray text-black"
+              type="submit"
+              disabled={true}
+            >
+              Create Event
+            </button>
+          )}
         </div>
       </form>
     </main>

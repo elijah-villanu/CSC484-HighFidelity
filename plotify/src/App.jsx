@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import "./App.css";
 import React, { useState, createContext, useMemo, useCallback } from "react";
 import { Routes, Route } from "react-router";
@@ -86,16 +87,6 @@ function App() {
   const [events, setEvents] = useState(initEvents);
   localStorage.setItem("ids", initEvents.length);
 
-  const handleCreate = (newEvent) => {
-    // Iterate and set event id
-    const newId = parseInt(localStorage.getItem("ids")) + 1;
-    newEvent.id = newId;
-    localStorage.setItem("ids", newId);
-
-    // Add event and set state
-    events.push(newEvent);
-    setEvents(events);
-  };
 
   // ===== In-memory RSVP state (survives navigation, resets on full reload) =====
   const [rsvpedEvents, setRsvpedEvents] = useState(() => new Set());
@@ -119,6 +110,24 @@ function App() {
     () => ({ isRsvped, toggleRsvp, currentUserName: "You" }),
     [isRsvped, toggleRsvp]
   );
+
+  
+  const handleCreate = (newEvent) => {
+    // Iterate and set event id
+    const newId = parseInt(localStorage.getItem("ids")) + 1;
+    newEvent.id = newId;
+    localStorage.setItem("ids", newId);
+
+    // Add event and set state
+    events.push(newEvent);
+    setEvents(events);
+
+    // New events automatically RSVPs creator/host
+    toggleRsvp(newId);
+    newEvent.going = [
+      { name: "You", isHost: true}
+    ];
+  };
 
   return (
     <RsvpContext.Provider value={rsvpValue}>
