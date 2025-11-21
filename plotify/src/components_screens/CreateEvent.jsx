@@ -102,7 +102,7 @@ export default function CreateEvent(props) {
       description: event.currentTarget.elements.description.value,
       tags: tags.filter((t) => t.on).map((t) => t.name),
     };
-    
+
     props.create(newEvent);
     // Once event is created, go back to events page and set flag event is created
     navigate("/events", {
@@ -136,12 +136,11 @@ export default function CreateEvent(props) {
 
   // generic handle input change applied to all required form inputs
   const validateInput = (field, input) => {
-    if (!input) {
-      setErrors((prev) => ({
-        ...prev,
-        // if input empty, set error, else no error
-        [field]: input.trim() === "" ? "error" : "",
-      }));
+    if (input.trim() === "") {
+      setErrors((prev) => ({ ...prev, [field]: "error" }));
+      return;
+    } else {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -177,7 +176,7 @@ export default function CreateEvent(props) {
         <div>
           <h2>
             Event Name
-            {errors.title && touched.title && (
+            {errors.title && (
               <span className="text-red-500">
                 <b> *Please Add an Event Name </b>
               </span>
@@ -186,6 +185,9 @@ export default function CreateEvent(props) {
           <input
             type="text"
             id="title"
+            onChange={(e) => {
+              if (touched.title) validateInput("title", e.currentTarget.value);
+            }}
             onBlur={(e) => {
               setTouched((prev) => ({ ...prev, title: true }));
               validateInput("title", e.currentTarget.value);
@@ -205,6 +207,9 @@ export default function CreateEvent(props) {
           <input
             type="text"
             id="location"
+            onChange={(e) => {
+              if (touched.loc) validateInput("loc", e.currentTarget.value);
+            }}
             onBlur={(e) => {
               setTouched((prev) => ({ ...prev, loc: true }));
               validateInput("loc", e.currentTarget.value);
@@ -263,6 +268,9 @@ export default function CreateEvent(props) {
             <input
               type="time"
               id="from"
+              onChange={(e) => {
+                if (touched.from) validateInput("from", e.currentTarget.value);
+              }}
               onBlur={(e) => {
                 setTouched((prev) => ({ ...prev, from: true }));
                 validateInput("from", e.currentTarget.value);
@@ -282,6 +290,9 @@ export default function CreateEvent(props) {
             <input
               type="time"
               id="to"
+              onChange={(e) => {
+                if (touched.to) validateInput("to", e.currentTarget.value);
+              }}
               onBlur={(e) => {
                 setTouched((prev) => ({ ...prev, to: true }));
                 validateInput("to", e.currentTarget.value);
@@ -309,6 +320,9 @@ export default function CreateEvent(props) {
               type="number"
               step="1"
               id="cap"
+              onChange={(e) => {
+                if (touched.cap) validateInput("cap", e.currentTarget.value);
+              }}
               onBlur={(e) => {
                 setTouched((prev) => ({ ...prev, cap: true }));
                 validateInput("cap", e.currentTarget.value);
