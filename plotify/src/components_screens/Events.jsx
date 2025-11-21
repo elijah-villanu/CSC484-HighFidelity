@@ -56,7 +56,7 @@ const toggleTagDropdown = () => {
     // Only render for three seconds
     const timer = setTimeout(() => {
       setCreatedFlag(false)
-    }, 3000)
+    }, 2000)
     // Need to cleanup
     return () => clearTimeout(timer)
   },[loc.state])
