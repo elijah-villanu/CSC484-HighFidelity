@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import "./App.css";
-import { useState } from "react";
+import React, { useState, createContext, useMemo, useCallback } from "react";
 import { Routes, Route } from "react-router";
 import Home from "./components_screens/Home";
 import Events from "./components_screens/Events";
@@ -8,6 +9,14 @@ import NavBar from "./components_screens/components/NavBar";
 import SpecificEvent from "./components_screens/SpecificEvent";
 import CreateEvent from "./components_screens/CreateEvent";
 import Conversation from "./components_screens/Conversation";
+
+// NEW: RSVP context lives at the app root. It keeps RSVP state in memory so it
+// survives route changes but clears on a full page reload.
+export const RsvpContext = createContext({
+  isRsvped: (_eventId) => false,
+  toggleRsvp: (_eventId) => {},
+  currentUserName: "You",
+});
 
 function App() {
   const initEvents = [
@@ -28,6 +37,7 @@ function App() {
         { name: "Bob R.", carSeats: { taken: 1, total: 4 } },
         { name: "Jane L.", isHost: true },
       ],
+      tags: ["Casual", "Food"]
     },
     {
       id: 2,
@@ -41,6 +51,7 @@ function App() {
       description:
         "We’re watching Pitch Perfect on a projector in the backyard. Blankets, snacks, and aca-tunes provided!",
       going: [],
+      tags: ["Casual", "Entertainment", "Outdoor"]
     },
     {
       id: 3,
@@ -54,6 +65,7 @@ function App() {
       description:
         "Gentle vinyasa session suitable for all levels. Bring your mat and water.",
       going: [{ name: "Sam T." }],
+      tags: ["Casual"]
     },
     {
       id: 4,
@@ -67,46 +79,82 @@ function App() {
       description:
         "Explore local vendors downtown. We’ll walk, sample, and hang together.",
       going: [],
+      tags: ["High Energy", "Entertainment", "Outdoor", "Food"]
     },
   ];
-  
+
   // Id assignment will be tracked by a counter in local storage (temporary)
   const [events, setEvents] = useState(initEvents);
-  localStorage.setItem('ids',initEvents.length);
+  localStorage.setItem("ids", initEvents.length);
 
+
+  // ===== In-memory RSVP state (survives navigation, resets on full reload) =====
+  const [rsvpedEvents, setRsvpedEvents] = useState(() => new Set());
+
+  const isRsvped = useCallback(
+    (eventId) => rsvpedEvents.has(Number(eventId)),
+    [rsvpedEvents]
+  );
+
+  const toggleRsvp = useCallback((eventId) => {
+    setRsvpedEvents((prev) => {
+      const next = new Set(prev);
+      const id = Number(eventId);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const rsvpValue = useMemo(
+    () => ({ isRsvped, toggleRsvp, currentUserName: "You" }),
+    [isRsvped, toggleRsvp]
+  );
+
+  
   const handleCreate = (newEvent) => {
     // Iterate and set event id
-    const newId = parseInt(localStorage.getItem('ids')) + 1
-    newEvent.id = newId
-    localStorage.setItem('ids', newId);
+    const newId = parseInt(localStorage.getItem("ids")) + 1;
+    newEvent.id = newId;
+    localStorage.setItem("ids", newId);
 
     // Add event and set state
-    events.push(newEvent)
-    setEvents(events)
+    events.push(newEvent);
+    setEvents(events);
+
+    // New events automatically RSVPs creator/host
+    toggleRsvp(newId);
+    newEvent.going = [
+      { name: "You", isHost: true}
+    ];
   };
 
-
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Home events={events}/>} />
+    <RsvpContext.Provider value={rsvpValue}>
+      <>
+        <Routes>
+          <Route path="/" element={<Home events={events} />} />
 
-        <Route path="/home" element={<Home events={events}/>} />
+          <Route path="/home" element={<Home events={events} />} />
 
-        <Route path="/events" element={<Events events={events} />} />
+          <Route path="/events" element={<Events events={events} />} />
 
-        <Route path="/events/:eventId" element={<SpecificEvent events={events} />} />
+          <Route
+            path="/events/:eventId"
+            element={<SpecificEvent events={events} />}
+          />
 
-        <Route path="/messages" element={<Messages />} />
+          <Route path="/messages" element={<Messages />} />
 
-        <Route path="/events/create" element={<CreateEvent create={handleCreate}/>} />
+          <Route path="/events/create" element={<CreateEvent create={handleCreate} />} />
 
-        <Route path="/conversation" element={<Conversation/>} />
+          <Route path="/conversation" element={<Conversation />} />
 
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
-      </Routes>
-      <NavBar />
-    </>
+          {/* <Route path="*" element={<NotFoundPage />} /> */}
+        </Routes>
+        <NavBar />
+      </>
+    </RsvpContext.Provider>
   );
 }
 

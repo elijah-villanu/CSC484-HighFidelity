@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router";
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import { RsvpContext } from "../App";
 import {
   Calendar as CalendarIcon,
   X,
@@ -14,6 +15,39 @@ import EventCard from "./components/EventCard";
 export default function Events(props) {
   const loc = useLocation()
   const [createdFlag, setCreatedFlag] = useState(false)
+  const { isRsvped } = useContext(RsvpContext);
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedTags, setSelectedTags] = useState([])
+  const filteredEvents = props.events.filter(event => {
+  // Search filter
+  const matchesSearch = event.title
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase());
+
+  // Tag filter
+  const matchesTags =
+    selectedTags.length === 0 ||
+    selectedTags.some(tag => event.tags?.includes(tag));
+
+  return matchesSearch && matchesTags;
+});
+
+const allTags = ["Casual", "High Energy", "Entertainment", "Food", "Outdoor"];
+
+const toggleTag = (tag) => {
+  setSelectedTags(prev =>
+    prev.includes(tag)
+      ? prev.filter(t => t !== tag)
+      : [...prev, tag]
+  );
+};
+
+const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
+
+const toggleTagDropdown = () => {
+  setTagDropdownOpen(prev => !prev);
+};
+
 
   useEffect(() => {
     if (loc.state?.created === true){
@@ -50,30 +84,64 @@ export default function Events(props) {
           <Search className="h-6 w-6 text-custom-dark-gray" />
           <input
             placeholder="Search Events"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-grow"
           />
+          <button onClick={() => setSearchTerm("")}>
           <X className="text-custom-dark-gray h-6 w-6">✖</X>
+          </button>
+          
         </div>
 
         {/* Funnel Icon */}
-        <button className="ml-3">
-          <Funnel className="h-6 w-6 text-custom-dark-gray" />
-        </button>
+        <div className="ml-3 relative">
+  <button onClick={toggleTagDropdown}>
+    <Funnel className="h-6 w-6 text-custom-dark-gray" />
+  </button>
+
+  {/* tag filtering */}
+  {tagDropdownOpen && (
+    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50 w-40">
+      <h3 className="font-semibold text-sm mb-2">Filter by Tags</h3>
+
+      <div className="flex flex-col gap-2">
+        {allTags.map(tag => (
+          <button
+            key={tag}
+            onClick={() => toggleTag(tag)}
+            className={`text-left px-2 py-1 rounded-md border ${
+              selectedTags.includes(tag)
+                ? "bg-custom-dark-blue text-white border-custom-dark-blue"
+                : "bg-white text-custom-dark-gray border-custom-gray"
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
       </div>
 
       {/* Event Cards */}
       <div className="space-y-[1rem] px-[1.5rem]">
-        {props.events.map((event) => (
-          <EventCard
-            linkTo={`/events/${event.id}`}
-            id={event.id}
-            eventTitle={event.title}
-            eventDate={event.date}
-            eventTime={event.time}
-            eventLocation={event.location}
-            eventCapacity={event.attendees}
-          />
-        ))}
+        {filteredEvents.map((event) => (
+        <EventCard
+    key={event.id}
+    linkTo={`/events/${event.id}`}
+    id={event.id}
+    eventTitle={event.title}
+    eventDate={event.date}
+    eventTime={event.time}
+    eventLocation={event.location}
+    eventCapacity={event.attendees}
+    isRsvped={isRsvped(event.id)}
+    
+  />
+))}
       </div>
 
       {/* Floating + Button */}
