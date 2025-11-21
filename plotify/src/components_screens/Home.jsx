@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import EventCard from "./components/EventCard";
 
 export default function Home(props) {
-  const user = "Jane L.";
+  const user = "John D.";
   const events = props.events;
 
   // --- Shared Helper Utilities ---
@@ -52,11 +52,11 @@ export default function Home(props) {
         <div className="h-full aspect-square overflow-hidden flex items-center justify-center rounded-full">
           <img
             className="w-full"
-            alt="John Doe"
+            alt="John D."
             src="https://images.pexels.com/photos/8638714/pexels-photo-8638714.jpeg"
           />
         </div>
-        <p className="font-bold text-[1.125rem]">John Doe</p>
+        <p className="font-bold text-[1.125rem]">John D.</p>
       </div>
       <div className="px-[1.5rem]">
         <div className="flex justify-between items-center mb-[0.5rem]">

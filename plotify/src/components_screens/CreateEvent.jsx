@@ -97,7 +97,7 @@ export default function CreateEvent(props) {
       time: convertTime(fromTime, toTime),
       location: event.currentTarget.elements.location.value,
       attendees: `1/${cap}`,
-      host: "You",
+      host: "John D.",
       capacity: cap,
       description: event.currentTarget.elements.description.value,
       tags: tags.filter((t) => t.on).map((t) => t.name),

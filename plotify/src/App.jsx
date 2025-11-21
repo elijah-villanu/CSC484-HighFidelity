@@ -15,7 +15,7 @@ import Conversation from "./components_screens/Conversation";
 export const RsvpContext = createContext({
   isRsvped: (_eventId) => false,
   toggleRsvp: (_eventId) => {},
-  currentUserName: "You",
+  currentUserName: "John D.",
 });
 
 function App() {
@@ -50,7 +50,7 @@ function App() {
       capacity: 6,
       description:
         "We’re watching Pitch Perfect on a projector in the backyard. Blankets, snacks, and aca-tunes provided!",
-      going: [],
+      going: [ { name: "Alex P.", isHost: true}],
       tags: ["Casual", "Entertainment", "Outdoor"],
     },
     {
@@ -105,8 +105,25 @@ function App() {
     });
   }, []);
 
+  React.useEffect(() => {
+  // Get all event ids where John D. is already going
+  const johnsEvents = events
+    .filter((event) =>
+      event.going?.some((person) => person.name === "John D.")
+    )
+    .map((event) => event.id);
+
+  // Toggle RSVP for each event only if not already RSVPed
+  johnsEvents.forEach((id) => {
+    if (!isRsvped(id)) {
+      toggleRsvp(id);
+    }
+  });
+}, [events]); // runs only when events are initially set
+
+
   const rsvpValue = useMemo(
-    () => ({ isRsvped, toggleRsvp, currentUserName: "You" }),
+    () => ({ isRsvped, toggleRsvp, currentUserName: "John D." }),
     [isRsvped, toggleRsvp]
   );
 
@@ -122,7 +139,7 @@ function App() {
 
     // New events automatically RSVPs creator/host
     toggleRsvp(newId);
-    newEvent.going = [{ name: "You", isHost: true }];
+    newEvent.going = [{ name: "John D.", isHost: true }];
   };
 
   const handleDelete = (id) => {
