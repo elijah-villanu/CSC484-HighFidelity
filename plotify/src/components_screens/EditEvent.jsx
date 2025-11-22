@@ -8,6 +8,7 @@ import {
 import Tag from "./components/Tag";
 import Calendar from "./components/Calendar";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 // Tag description data structure
 const initTags = [
@@ -63,55 +64,85 @@ function convertDate(unformattedDate) {
   return `${month}. ${day}`;
 }
 
-export default function CreateEvent(props) {
-  const [tags, setTags] = useState(initTags);
+export default function EditEvent(props) {
+  // grab id to edit
+  const { eventId } = useParams();
+  const existingEvent = props.eventList.find((e) => e.id === parseInt(eventId));
+
+  const [formData, setFormData] = useState(null);
+
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [date, setDate] = useState();
   const [dayError, setDayError] = useState(false);
+
+  // if editing, load existing form data (using unformatted data)
+  useEffect(() => {
+    if (existingEvent) {
+      setFormData({
+        title: existingEvent.title || "",
+        location: existingEvent.location || "",
+        description: existingEvent.description || "",
+        tags: existingEvent.tags || [],
+        unformattedDate: existingEvent.unformattedDate || "",
+        unformattedFrom: existingEvent.unformattedFrom || "",
+        unformattedTo: existingEvent.unformattedTo || "",
+        capacity: existingEvent.capacity || "",
+      });
+      setDate(existingEvent.unformattedDate);
+    }
+  }, [existingEvent]);
+
+  // if editing, load those tags, if not use generic initTags (all off)
+  const [tags, setTags] = useState(
+    existingEvent
+      ? initTags.map((t) => ({ ...t, on: existingEvent.tags.includes(t.name) }))
+      : initTags
+  );
+
   const [errors, setErrors] = useState({
     title: "",
-    loc: "",
+    location: "",
     from: "",
     to: "",
-    cap: "",
+    capacity: "",
   });
   // Allows input validation to happen only after user clicks away from input
   const [touched, setTouched] = useState({
-    title: false,
-    loc: false,
-    from: false,
-    to: false,
-    cap: false,
+    title: true,
+    location: true,
+    from: true,
+    to: true,
+    capacity: true,
   });
   const [canSubmit, setCanSubmit] = useState(false);
 
   // Can only submit if form input is valid
   const handleSubmit = (event) => {
     event.preventDefault();
-    const fromTime = event.currentTarget.elements.from.value;
-    const toTime = event.currentTarget.elements.to.value;
-    const cap = event.currentTarget.elements.cap.value;
-    // Unformatted date and times are kept for when editing an event
-    const newEvent = {
-      title: event.currentTarget.elements.title.value,
+    const fromTime = formData.unformattedFrom;
+    const toTime = formData.unformattedTo;
+    const capacity = formData.capacity;
+    // first input all existing data then add edits (tracked by form data for initial form data load)
+    const updatedEvent = {
+      ...existingEvent,
+      title: formData.title,
       date: convertDate(date),
       unformattedDate: date,
       time: convertTime(fromTime, toTime),
       unformattedFrom: fromTime,
       unformattedTo: toTime,
-      location: event.currentTarget.elements.location.value,
-      attendees: `1/${cap}`,
-      host: "John D.",
-      capacity: cap,
-      description: event.currentTarget.elements.description.value,
+      location: formData.location,
+      attendees: `1/${capacity}`,
+      host: "You",
+      capacity: capacity,
+      description: formData.description,
       tags: tags.filter((t) => t.on).map((t) => t.name),
+      editor: true,
     };
 
-    props.create(newEvent);
-    // Once event is created, go back to events page and set flag event is created
-    navigate("/events", {
-      state: { created: true },
-    });
+    props.update(updatedEvent);
+    // Once event is edited, go back to specific page
+    navigate(-1);
   };
 
   // Check all required inputs for no errors then makes button available
@@ -156,20 +187,16 @@ export default function CreateEvent(props) {
   };
 
   const navigate = useNavigate();
+  // Wait for current event state to be loaded in before rendering
+  if (!formData) return <div></div>;
   return (
     <main className="flex flex-col gap-[0.75rem]">
       {/* Header */}
       <div className="flex items-center gap-[1rem] px-[1.5rem] border-b border-neutral-300 bg-custom-beige min-h-[5rem]">
-        <button
-          onClick={() =>
-            navigate("/events", {
-              state: { created: false },
-            })
-          }
-        >
+        <button onClick={() => navigate(-1)}>
           <BackIcon className="h-5 w-5 text-custom-dark-gray" />
         </button>
-        <h1 className="text-[1.25rem] font-semibold">New Event</h1>
+        <h1 className="text-[1.25rem] font-semibold">Edit Event</h1>
       </div>
 
       <form
@@ -189,8 +216,10 @@ export default function CreateEvent(props) {
           <input
             type="text"
             id="title"
+            value={formData.title}
             onChange={(e) => {
               if (touched.title) validateInput("title", e.currentTarget.value);
+              setFormData((prev) => ({ ...prev, title: e.target.value }));
             }}
             onBlur={(e) => {
               setTouched((prev) => ({ ...prev, title: true }));
@@ -202,7 +231,7 @@ export default function CreateEvent(props) {
         <div>
           <h2>
             Location
-            {errors.loc && touched.loc && (
+            {errors.location && touched.location && (
               <span className="text-red-500">
                 <b> *Please Add an Location </b>
               </span>
@@ -211,12 +240,15 @@ export default function CreateEvent(props) {
           <input
             type="text"
             id="location"
+            value={formData.location}
             onChange={(e) => {
-              if (touched.loc) validateInput("loc", e.currentTarget.value);
+              if (touched.location)
+                validateInput("location", e.currentTarget.value);
+              setFormData((prev) => ({ ...prev, location: e.target.value }));
             }}
             onBlur={(e) => {
-              setTouched((prev) => ({ ...prev, loc: true }));
-              validateInput("loc", e.currentTarget.value);
+              setTouched((prev) => ({ ...prev, location: true }));
+              validateInput("location", e.currentTarget.value);
             }}
             className="pt-1 pb-1 border-b-2 border-custom-dark-gray w-full outline-none focus:border-b-2 focus:border-black"
           ></input>
@@ -272,8 +304,13 @@ export default function CreateEvent(props) {
             <input
               type="time"
               id="from"
+              value={formData.unformattedFrom}
               onChange={(e) => {
                 if (touched.from) validateInput("from", e.currentTarget.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  unformattedFrom: e.target.value,
+                }));
               }}
               onBlur={(e) => {
                 setTouched((prev) => ({ ...prev, from: true }));
@@ -294,8 +331,13 @@ export default function CreateEvent(props) {
             <input
               type="time"
               id="to"
+              value={formData.unformattedTo}
               onChange={(e) => {
                 if (touched.to) validateInput("to", e.currentTarget.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  unformattedTo: e.target.value,
+                }));
               }}
               onBlur={(e) => {
                 setTouched((prev) => ({ ...prev, to: true }));
@@ -312,7 +354,7 @@ export default function CreateEvent(props) {
             <PersonIcon className="h-[1.1rem]" />
             <h2>
               Capacity
-              {errors.cap && touched.cap && (
+              {errors.capacity && touched.capacity && (
                 <span className="text-red-500">
                   <b> *Please Add a Capacity </b>
                 </span>
@@ -323,13 +365,16 @@ export default function CreateEvent(props) {
             <input
               type="number"
               step="1"
-              id="cap"
+              id="capacity"
+              value={formData.capacity}
               onChange={(e) => {
-                if (touched.cap) validateInput("cap", e.currentTarget.value);
+                if (touched.capacity)
+                  validateInput("capacity", e.currentTarget.value);
+                setFormData((prev) => ({ ...prev, capacity: e.target.value }));
               }}
               onBlur={(e) => {
-                setTouched((prev) => ({ ...prev, cap: true }));
-                validateInput("cap", e.currentTarget.value);
+                setTouched((prev) => ({ ...prev, capacity: true }));
+                validateInput("capacity", e.currentTarget.value);
               }}
               className="mt-[0.8rem] pt-[0.3rem] pb-[0.3rem] pl-[1rem] outline-1 rounded-sm outline-custom-dark-gray w-full"
             ></input>
@@ -343,6 +388,10 @@ export default function CreateEvent(props) {
           <textarea
             rows="3"
             id="description"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
             className="outline-1 outline-custom-dark-gray w-full p-[0.5rem] rounded-md focus:outline-black"
           ></textarea>
         </div>
@@ -365,14 +414,14 @@ export default function CreateEvent(props) {
           </div>
         </div>
 
-        {/* Create event button */}
+        {/* Edit event button */}
         <div className="p-[1rem] px-[1.5rem]">
           {canSubmit ? (
             <button
               className="w-full rounded-2xl p-3 text-center font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 bg-custom-dark-blue text-white focus:ring-custom-dark-blue"
               type="submit"
             >
-              Create Event
+              Edit Event
             </button>
           ) : (
             <button
@@ -380,7 +429,7 @@ export default function CreateEvent(props) {
               type="submit"
               disabled={true}
             >
-              Create Event
+              Edit Event
             </button>
           )}
         </div>

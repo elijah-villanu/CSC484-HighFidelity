@@ -11,6 +11,7 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronUp,
+  Pencil as EditIcon,
   Trash as DeleteIcon,
 } from "lucide-react";
 
@@ -101,13 +102,22 @@ export default function SpecificEvent({ events = [], deleteEvent }) {
               <h2 className="text-xl font-semibold">{event.title}</h2>
               {/* Delete button */}
               {host === currentUserName ? (
-                <button
-                  onClick={() => setConfirmOpen(true)}
-                  className="flex items-center gap-[0.5rem] w-fit rounded-2xl p-3 text-center font-semibold active:scale-[.99] text-red-800"
-                >
-                  <DeleteIcon className="h-4 w-4" />
-                  Delete Event
-                </button>
+                <div className="flex flex-col gap-1">
+                  <button
+                    onClick={() => navigate(`/events/${eventId}/edit`)}
+                    className="flex items-center gap-[0.5rem] w-fit pl-3 rounded-2xl text-center font-semibold active:scale-[.99] text-black"
+                  >
+                    <EditIcon className="h-4 w-4" />
+                    Edit Event
+                  </button>
+                  <button
+                    onClick={() => setConfirmOpen(true)}
+                    className="flex items-center gap-[0.5rem] w-fit rounded-2xl pl-3  text-center font-semibold active:scale-[.99] text-red-800"
+                  >
+                    <DeleteIcon className="h-4 w-4" />
+                    Delete Event
+                  </button>
+                </div>
               ) : null}
             </div>
 
@@ -255,7 +265,7 @@ export default function SpecificEvent({ events = [], deleteEvent }) {
           </div>
         </div>
       </div>
-      
+
       {confirmOpen && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-[80%] max-w-sm shadow-lg">
