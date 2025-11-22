@@ -9,6 +9,7 @@ import NavBar from "./components_screens/components/NavBar";
 import SpecificEvent from "./components_screens/SpecificEvent";
 import CreateEvent from "./components_screens/CreateEvent";
 import Conversation from "./components_screens/Conversation";
+import EditEvent from "./components_screens/EditEvent";
 
 // NEW: RSVP context lives at the app root. It keeps RSVP state in memory so it
 // survives route changes but clears on a full page reload.
@@ -17,6 +18,9 @@ export const RsvpContext = createContext({
   toggleRsvp: (_eventId) => {},
   currentUserName: "John D.",
 });
+
+
+localStorage.setItem("ids", 5);
 
 function App() {
   const initEvents = [
@@ -85,7 +89,6 @@ function App() {
 
   // Id assignment will be tracked by a counter in local storage (temporary)
   const [events, setEvents] = useState(initEvents);
-  localStorage.setItem("ids", initEvents.length);
 
   // ===== In-memory RSVP state (survives navigation, resets on full reload) =====
   const [rsvpedEvents, setRsvpedEvents] = useState(() => new Set());
@@ -130,7 +133,9 @@ function App() {
   const handleCreate = (newEvent) => {
     // Iterate and set event id
     const newId = parseInt(localStorage.getItem("ids")) + 1;
+    console.log(newId)
     newEvent.id = newId;
+    localStorage.removeItem("ids")
     localStorage.setItem("ids", newId);
 
     // Add event and set state
@@ -145,6 +150,14 @@ function App() {
   const handleDelete = (id) => {
     setEvents((prev) => prev.filter((e) => e.id !== id));
   };
+
+  // updates just find existing event id and adds edited fields
+  const handleUpdate = (updatedEvent) => {
+    setEvents(prevEvents =>
+      prevEvents.map(ev =>
+        ev.id === updatedEvent.id ? { ...ev, ...updatedEvent } : ev
+      )
+  )};
 
   return (
     <RsvpContext.Provider value={rsvpValue}>
@@ -163,12 +176,11 @@ function App() {
             }
           />
 
+          <Route path="/events/:eventId/edit" element={<EditEvent update={handleUpdate} eventList={events}/>} />
+
           <Route path="/messages" element={<Messages />} />
 
-          <Route
-            path="/events/create"
-            element={<CreateEvent create={handleCreate} />}
-          />
+          <Route path="/events/create" element={<CreateEvent create={handleCreate} eventList={events}/>} />
 
           <Route path="/conversation" element={<Conversation />} />
 
