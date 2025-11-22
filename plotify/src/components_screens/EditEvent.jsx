@@ -133,7 +133,7 @@ export default function EditEvent(props) {
       unformattedTo: toTime,
       location: formData.location,
       attendees: `1/${capacity}`,
-      host: "You",
+      host: "John D.",
       capacity: capacity,
       description: formData.description,
       tags: tags.filter((t) => t.on).map((t) => t.name),

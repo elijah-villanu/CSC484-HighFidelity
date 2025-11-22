@@ -54,7 +54,7 @@ function App() {
       capacity: 6,
       description:
         "We’re watching Pitch Perfect on a projector in the backyard. Blankets, snacks, and aca-tunes provided!",
-      going: [ { name: "Alex P.", isHost: true}],
+      going: [ { name: "Alex P.", isHost: true}, { name: "Bob R.", carSeats: { taken: 1, total: 4 } }],
       tags: ["Casual", "Entertainment", "Outdoor"],
     },
     {

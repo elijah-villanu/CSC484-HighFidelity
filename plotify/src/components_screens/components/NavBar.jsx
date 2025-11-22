@@ -18,7 +18,7 @@ export default function NavBar() {
     }, [location]);
 
   return (
-    <nav className="min-h-full min-w-full bg-white border-t-1 border-t-solid border-t-custom-gray">
+    <nav className="min-h-full min-w-full bg-white border-t-1 border-t-solid border-t-custom-gray z-49">
       <ul className="flex min-w-full min-h-full">
         <li className="flex flex-grow items-center justify-center">
           <Link to={"/"} className={currentPath=="/" | currentPath =="/home" ? "flex flex-col items-center text-custom-dark-blue" : "flex flex-col items-center text-custom-gray"} >

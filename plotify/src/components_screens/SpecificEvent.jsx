@@ -252,14 +252,26 @@ export default function SpecificEvent({ events = [], deleteEvent }) {
             {/* RSVP button */}
             <div className="p-[1rem] px-[1.5rem]">
               <button
-                onClick={() => toggleRsvp(event.id)}
-                className={`w-full rounded-2xl p-3 text-center font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  isRsvped(event.id)
-                    ? "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600"
-                    : "bg-custom-dark-blue text-white focus:ring-custom-dark-blue"
-                }`}
+                onClick={() => {
+                  if (host !== currentUserName) toggleRsvp(event.id);
+                }}
+                disabled={host === currentUserName}
+                className={`w-full rounded-2xl p-3 text-center font-semibold shadow transition active:scale-[.99] focus:outline-none focus:ring-2 focus:ring-offset-2
+
+    ${
+      host === currentUserName
+        ? "bg-custom-gray text-black cursor-not-allowed"
+        : isRsvped(event.id)
+        ? "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-600"
+        : "bg-custom-dark-blue text-white hover:bg-custom-dark-blue focus:ring-custom-dark-blue"
+    }
+  `}
               >
-                {isRsvped(event.id) ? "RSVP’d" : "RSVP"}
+                {host === currentUserName
+                  ? "You are the host"
+                  : isRsvped(event.id)
+                  ? "RSVP’d"
+                  : "RSVP"}
               </button>
             </div>
           </div>
